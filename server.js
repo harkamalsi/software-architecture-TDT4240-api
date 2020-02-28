@@ -21,6 +21,7 @@ mongoose.connect(uri, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
   dbName: 'inverse-pacman'
 });
 
@@ -28,6 +29,9 @@ const connection = mongoose.connection;
 connection.once('open', () => {
   console.log('MongoDB database connected...');
 });
+
+const playersRouter = require('./routes/players');
+app.use('/api/players', playersRouter);
 
 // Starts the server
 app.listen(PORT, () => {
