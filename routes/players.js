@@ -8,7 +8,7 @@ const Player = require('../models/player.model');
 router.route('/').get((req, res) => {
   let limit = req.limit || 10;
 
-  Player.findAll()
+  Player.find()
     .limit(limit)
     .then(players => res.json(players))
     .catch(err => res.status(400).json('Error: ' + err));
@@ -22,34 +22,21 @@ router.route('/add').post((req, res) => {
 
   let newPlayer = new Player({
     nickname,
-    scores: [
-      { pacmanScore: 0, ghostScore: 0.0 },
-      { pacmanTeamScore: 0, ghostTeamScore: 0 }
-    ]
+    spScore: [{ pacmanScore: 0, ghostScore: 0.0 }],
+    mpScore: [{ pacmanTeamScore: 0, ghostTeamScore: 0 }]
   });
 
-  let dbPlayer = Player.find({ nickname });
-  if (res.json(dbPlayer).length) {
-    res.status(400).json('Nickname already in use!');
-  } else {
-    newPlayer
-      .save()
-      .then(player => res.json(player))
-      .then(() => res.json('Player added!'))
-      .catch(err => res.status(400).json('Error: ' + err));
-  }
-
-  /* newPlayer.find(nickname, (err, docs) => {
-      if (docs.length) {
-        res.status(400).json('Nickname already in use!');
-      } else {
-        newPlayer
-          .save()
-          .then(player => res.json(player))
-          .then(() => res.json('Player added!'))
-          .catch(err => res.status(400).json('Error: ' + err));
-      }
-    }); */
+  Player.exists({ nickname }).then(exists => {
+    if (exists) {
+      res.status(400).json('Nickname already in use!');
+    } else {
+      newPlayer
+        .save()
+        .then(player => res.json(player))
+        .then(console.log('Player added!'))
+        .catch(err => res.status(400).json('Error: ' + err));
+    }
+  });
 });
 
 // @route     PUT api/players/
@@ -58,37 +45,32 @@ router.route('/add').post((req, res) => {
 router.route('/update').put((req, res) => {
   let id = req.body.id;
 
-  // scores format as following
-  /* scores: [
-    { pacmanScore: 0, ghostScore: 0.0 },
-    { pacmanTeamScore: 0, ghostTeamScore: 0 }
-  ] */
+  // scores string raw format as following
+  /* "spScore":[{"_id":"5e59981aad3fb31e10a2887e","pacmanScore":0,"ghostScore":0}],"mpScore":[{"_id":"5e59981aad3fb31e10a2887f","pacmanTeamScore":0,"ghostTeamScore":0}]
+   */
 
-  Player.findByIdAndUpdate(id, {
-    nickname: req.body.nickname,
-    scores: req.body.scores
-  })
-    .then(company => res.json(company))
-    .catch(err => res.status(400).json('Error: ' + err));
-
-  /* Player.findById(id)
-    .then(player => {
-      player.nickname = req.body.nickname || player.nickname;
-      player.scores = req.body.scores || player.scores;
-
-      player
-        .save()
-        .then(player => res.json(player))
-        .then(() => res.json('Player updated!'))
-        .catch(err => res.status(400).json('Error: ' + err));
-    })
-    .catch(err => res.status(400).json('Error: ' + err)); */
+  Player.findByIdAndUpdate(
+    id,
+    {
+      nickname: req.body.nickname,
+      spScore: req.body.spScore,
+      mpScore: req.body.mpScore
+    },
+    { new: true },
+    (err, result) => {
+      if (err) {
+        res.status(400).json('Error: ' + err);
+      } else {
+        res.json(result);
+      }
+    }
+  );
 });
 
 // @route     GET api/players/:nickname
 // @desc      Get players with exact same or similar nicknames
 // @access    Public
-router.route('/:nickname').get((req, res) => {
+router.route('/nickname/:nickname').get((req, res) => {
   let nickname = req.params.nickname;
 
   Player.find({ nickname: { $regex: nickname, $options: 'i' } })
@@ -99,7 +81,7 @@ router.route('/:nickname').get((req, res) => {
 // @route     GET api/players/:id
 // @desc      Get player with exact same id
 // @access    Public
-router.route('/:id').get((req, res) => {
+router.route('/id/:id').get((req, res) => {
   let id = req.params.id;
 
   Player.findById(id)
