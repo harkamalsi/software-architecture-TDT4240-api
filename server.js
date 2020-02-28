@@ -29,6 +29,9 @@ connection.once('open', () => {
   console.log('MongoDB database connected...');
 });
 
+const playersRouter = require('./routes/players');
+app.use('/api/players', playersRouter);
+
 // Starts the server
 app.listen(PORT, () => {
   console.log(`Server is running on PORT: ${PORT}`);
