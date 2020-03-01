@@ -1,5 +1,5 @@
 # software-architecture-TDT4240-api
-Backend.
+Backend logic.
 
 Server is running here: https://inverse-pacman.herokuapp.com/
 
