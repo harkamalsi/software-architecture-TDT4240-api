@@ -1,7 +1,11 @@
 const express = require('express');
-//"Cross-origin resource sharing (CORS) allows AJAX requests to skip the Same-origin policy and access resources from remote hosts." -Carnes, Beau
+const http = require('http');
+const socketio = require('socket.io');
 const cors = require('cors');
 const mongoose = require('mongoose');
+
+/* const Constants = require('../shared/constants');
+const Game = require('./game'); */
 
 // Environment variables
 require('dotenv').config();
@@ -14,6 +18,8 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 // Allows to parse json
 app.use(express.json());
+
+const server = http.createServer(app);
 
 const uri = process.env.MONGODB_URI;
 
@@ -31,9 +37,32 @@ connection.once('open', () => {
 });
 
 const playersRouter = require('./routes/players');
+const gameRouter = require('./routes/game');
 app.use('/api/players', playersRouter);
+app.use('/game', gameRouter);
+
+// Setup socket.io
+const io = socketio(server);
+
+let interval;
+
+// Listen for socket.io connections
+io.on('connection', socket => {
+  console.log('Player connected!', socket.id);
+
+  if (interval) clearInterval(interval);
+
+  socket.emit('players', `${socket.id}`);
+
+  /* interval = setInterval(() => {
+    console.log('Player is still connected..');
+    //socket.emit('players', `${socket.id} is still connected..`);
+  }, 20000); */
+
+  socket.on('disconnect', () => console.log('Player disconnected!'));
+});
 
 // Starts the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on PORT: ${PORT}`);
 });
