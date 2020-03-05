@@ -7,7 +7,7 @@ class App extends Component {
     this.state = {
       response: false,
       endpoint: 'http://localhost:5000',
-      playerId: '5e5a7a198929790017234e40',
+      playerId: '5e60f07c4538a749087c78ca',
       player: false
     };
   }

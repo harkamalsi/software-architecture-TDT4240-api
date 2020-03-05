@@ -7,8 +7,8 @@ const playerSchema = new Schema({
     type: String,
     required: true
   },
-  spScore: [{ pacmanScore: Number, ghostScore: Number }],
-  mpScore: [{ pacmanTeamScore: Number, ghostTeamScore: Number }]
+  spScore: [],
+  mpScore: []
 });
 
 module.exports = mongoose.model('players', playerSchema);

@@ -20,10 +20,13 @@ router.route('/').get((req, res) => {
 router.route('/add').post((req, res) => {
   let nickname = req.body.nickname;
 
+  let pacmanScore, ghostScore, pacmanTeamScore, ghostTeamScore;
+  pacmanScore = ghostScore = pacmanTeamScore = ghostTeamScore = 0;
+
   let newPlayer = new Player({
     nickname,
-    spScore: [{ pacmanScore: 0, ghostScore: 0.0 }],
-    mpScore: [{ pacmanTeamScore: 0, ghostTeamScore: 0 }]
+    spScore: [pacmanScore, ghostScore],
+    mpScore: [pacmanTeamScore, ghostTeamScore]
   });
 
   Player.exists({ nickname }).then(exists => {
@@ -43,28 +46,67 @@ router.route('/add').post((req, res) => {
 // @desc      Update player with exact same id
 // @access    Public
 router.route('/update').put((req, res) => {
+  let changeNickname = false;
+
   let id = req.body.id;
+  let nickname = req.body.nickname;
 
-  // scores string raw format as following
-  /* "spScore":[{"_id":"5e59981aad3fb31e10a2887e","pacmanScore":0,"ghostScore":0}],"mpScore":[{"_id":"5e59981aad3fb31e10a2887f","pacmanTeamScore":0,"ghostTeamScore":0}]
-   */
-
-  Player.findByIdAndUpdate(
-    id,
-    {
-      nickname: req.body.nickname,
-      spScore: req.body.spScore,
-      mpScore: req.body.mpScore
-    },
-    { new: true },
-    (err, result) => {
-      if (err) {
-        res.status(400).json('Error: ' + err);
-      } else {
-        res.json(result);
+  // Checking if client want to change nickname or not
+  findPlayerById(req, res)
+    .then(player => {
+      if (player.nickname !== nickname) {
+        changeNickname = !changeNickname;
       }
-    }
-  );
+    })
+    .then(response => {
+      if (changeNickname) {
+        Player.exists({ nickname }).then(exists => {
+          if (exists) {
+            res.status(400).json('Nickname already in use!');
+          } else {
+            Player.findByIdAndUpdate(
+              id,
+              {
+                nickname,
+                spScore: req.body.spScore,
+                mpScore: req.body.mpScore
+              },
+              { new: true },
+              (err, result) => {
+                if (err) {
+                  res.status(400).json('Error: ' + err);
+                } else {
+                  res.json(result);
+                  console.log('Player score and nickname updated!');
+                }
+              }
+            );
+          }
+        });
+      } else {
+        Player.findByIdAndUpdate(
+          id,
+          {
+            // Forcing to not update nickname here. A query to mongoDB must be made
+            // first to check it new nickname is valid or not.
+            spScore: req.body.spScore,
+            mpScore: req.body.mpScore
+          },
+          { new: true },
+          (err, result) => {
+            if (err) {
+              res.status(400).json('Error: ' + err);
+            } else {
+              res.json(result);
+              console.log('Player score updated!');
+            }
+          }
+        );
+      }
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
+
+  changeNickname != changeNickname;
 });
 
 // @route     GET api/players/:nickname
@@ -82,11 +124,16 @@ router.route('/nickname/:nickname').get((req, res) => {
 // @desc      Get player with exact same id
 // @access    Public
 router.route('/id/:id').get((req, res) => {
-  let id = req.params.id;
-
-  Player.findById(id)
+  findPlayerById(req, res)
     .then(player => res.json(player))
     .catch(err => res.status(400).json('Error: ' + err));
 });
+
+// Helper method
+// Retuns response object
+const findPlayerById = (req, res) => {
+  let id = req.params.id || req.body.id;
+  return Player.findById(id);
+};
 
 module.exports = router;
