@@ -11,6 +11,5 @@
 .env.test.local
 .env.production.local
 
-# ignoring client files for now
-# they are used to test socket.io-client
+# Manual testing Socket.io-client
 ./src/client/
