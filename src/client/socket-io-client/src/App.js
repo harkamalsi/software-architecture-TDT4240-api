@@ -7,7 +7,7 @@ class App extends Component {
     this.state = {
       response: false,
       endpoint: 'http://localhost:5000',
-      playerId: '5e60f07c4538a749087c78ca',
+      playerId: '5e60f7f7971e074aa0abddc0',
       player: false
     };
   }
@@ -26,7 +26,6 @@ class App extends Component {
         return response.json();
       })
       .then(player => {
-        console.log(player);
         this.setState({ player });
       });
   }
