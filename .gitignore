@@ -11,5 +11,5 @@
 .env.test.local
 .env.production.local
 
-# Manual testing Socket.io-client
+# Untracking Socket.io-client files
 ./src/socket-io-client/
