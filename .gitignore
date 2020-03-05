@@ -12,4 +12,4 @@
 .env.production.local
 
 # Manual testing Socket.io-client
-./src/client/
+./src/socket-io-client/
