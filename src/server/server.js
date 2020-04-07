@@ -119,7 +119,7 @@ io.on('connection', (socket) => {
 
     updateLobbies(room, socketId, clientId, true);
 
-    //console.log(lobbies);
+    console.log(lobbies);
   });
 });
 
