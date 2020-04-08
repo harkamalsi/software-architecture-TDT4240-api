@@ -7,7 +7,7 @@ class App extends Component {
     this.state = {
       response: false,
       response1: false,
-      endpoint: 'http://localhost:5000',
+      endpoint: 'https://inverse-pacman.herokuapp.com',
       playerId: '5e60f7f7971e074aa0abddc0',
       nickname: false,
       socket: null,
