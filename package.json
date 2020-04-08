@@ -8,7 +8,8 @@
     "frontend": "cd ./src/socket-io-client && npm start",
     "backend": "cd ./src/server/ && nodemon server.js",
     "build": "cd ./src/socket-io-client && npm run build",
-    "start": "concurrently \"npm run frontend\" \"npm run backend\"",
+    "start": "npm run backend",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
     "heroku-postbuild": "npm run build"
   },
   "repository": {
