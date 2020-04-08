@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const http = require('http');
 const socketio = require('socket.io');
 const cors = require('cors');
@@ -12,7 +13,10 @@ require('dotenv').config();
 
 // Following for creating the express server
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'socket-io-client/build')));
 
 // Middleware (cors)
 app.use(cors());
@@ -40,6 +44,12 @@ const playersRouter = require('./routes/players');
 const gameRouter = require('./routes/game');
 app.use('/api/players', playersRouter);
 app.use('/game', gameRouter);
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/socket-io-client/build/index.html'));
+});
 
 // Setup socket.io
 const io = socketio(server);

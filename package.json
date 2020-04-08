@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "frontend": "cd ./src/socket-io-client && npm start",
+    "frontend": "concurrently \"npm run build\" \"cd ./src/socket-io-client && npm start\"",
     "backend": "cd ./src/server/ && nodemon server.js",
+    "build": "cd ./src/socket-io-client && npm run build",
     "start": "concurrently \"npm run frontend\" \"npm run backend\""
   },
   "repository": {
