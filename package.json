@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "frontend": "cd ./src/socket-io-client && npm start",
     "backend": "cd ./src/server/ && nodemon server.js",
-    "start": "concurrently \"npm run frontend\" \"npm run backend\""
+    "start": "npm run backend"
   },
   "repository": {
     "type": "git",
