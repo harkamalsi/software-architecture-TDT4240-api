@@ -11,8 +11,7 @@
     "server": "cd ./src/server/ && nodemon server.js",
     "server-prod": "cd ./src/server/ && node server.js",
     "start": "cd ./src/server/ && node server.js",
-    "dev": "concurrently \"npm run build\" \"npm run server \"",
-    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client"
+    "dev": "concurrently \"npm run build\" \"npm run server \""
   },
   "repository": {
     "type": "git",
