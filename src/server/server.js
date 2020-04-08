@@ -42,13 +42,17 @@ connection.once('open', () => {
 
 const playersRouter = require('./routes/players');
 const gameRouter = require('./routes/game');
+
 app.use('/api/players', playersRouter);
 app.use('/game', gameRouter);
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/socket-io-client/build/index.html'));
+  // console.log(path.join(__dirname, '..', '/socket-io-client/build/index.html'));
+  res.sendFile(
+    path.join(__dirname, '..', '/socket-io-client/build/index.html')
+  );
 });
 
 // Setup socket.io

@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "frontend": "cd ./src/socket-io-client && npm start",
-    "backend": "cd ./src/server/ && nodemon server.js",
+    "client-install": "npm install --prefix client",
     "build": "cd ./src/socket-io-client && npm run build",
-    "start": "npm run backend",
-    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
-    "heroku-postbuild": "npm run build"
+    "client": "cd ./src/socket-io-client && npm start",
+    "server": "cd ./src/server/ && nodemon server.js",
+    "server-prod": "cd ./src/server/ && node server.js",
+    "start": "cd ./src/server/ && node server.js",
+    "dev": "concurrently \"npm run build\" \"npm run server \"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "repository": {
     "type": "git",
