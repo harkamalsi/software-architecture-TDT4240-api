@@ -147,7 +147,7 @@ io.on('connection', (socket) => {
     console.log({ newSockets: lobbies[0].sockets });
   }); */
 
-  socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
+  socket.on(Constants.MSG_TYPES.JOIN_LOBBY, joinLobby);
   socket.on(Constants.MSG_TYPES.CREATE_LOBBY, createLobby);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
   socket.on('disconnect', onDisconnectLobby);
