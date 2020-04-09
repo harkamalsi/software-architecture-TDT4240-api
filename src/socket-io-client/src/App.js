@@ -54,20 +54,24 @@ class App extends Component {
     console.log(socket);
     console.log('join_lobby', 'socket', lobbyName, nickname);
     // Emitting nickname to server side for joining a lobby with name
-    socket.emit('join_lobby', lobbyName, nickname, 'pacman');
+    socket.emit('join_lobby', socket.id, lobbyName, nickname, 'pacman');
 
     // Emitting nickname to server side for creating a lobby; not sending a name
     //console.log('Creating a lobby without providing a lobby name');
     //socket.emit('create_lobby', { socketid: socket.id, nickname, playerId });
 
-    this.fetchUpdates('update');
+    this.fetchUpdates('player_joined_lobby');
+
+    this.state.socket.on('full_lobby', (data) => {
+      console.log(data);
+      this.setState({ response1: 'full_lobby' });
+    });
   }
 
   fetchUpdates(event) {
     // Now this socket is connected to lobby1 and will on default listen here
-    this.state.socket.on(event, (data) => {
-      console.log(data);
-      this.setState({ response1: data });
+    this.state.socket.on(event, () => {
+      this.setState({ response1: 'Player joined lobby! (from server)' });
     });
   }
 
@@ -99,7 +103,7 @@ class App extends Component {
             </div>
           ) : (
             <div>
-              <p>Player connected to: {response1.room}</p>
+              <p>Player connected to: {response1}</p>
               <p>Player nickname is: {nickname}</p>
             </div>
           )

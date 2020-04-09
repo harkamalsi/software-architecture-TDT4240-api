@@ -2,8 +2,9 @@ const Constants = require('../constants');
 const Lobby = require('./Lobby');
 
 class Game {
-  constructor() {
+  constructor(io) {
     this.lobbies = [];
+    this.io = io;
   }
 
   getLobbiesCounter() {
@@ -15,23 +16,25 @@ class Game {
   }
 
   addLobby(lobbyName) {
-    this.lobbies.push(new Lobby(lobbyName));
+    this.lobbies.push(new Lobby(this.io, lobbyName));
   }
 
   removeLobby(lobbyName) {
     this.lobbies = this.lobbies.filter((lobby) => lobby.name !== lobbyName);
   }
 
-  addPlayerToLobby(socket, lobbyName, nickname, type) {
+  addPlayerToLobby(socketID, lobbyName, nickname, type) {
     const lobby = this.lobbies.find((lobby) => lobby.name === lobbyName);
 
     if (lobby) {
-      lobby.addPlayer(socket, nickname, type);
+      lobby.addPlayer(socketID, nickname, type);
     }
   }
 
-  removePlayerFromLobby(socket, lobbyName) {
-    this.lobbies.find((lobby) => lobby.name == lobbyName).removePlayer(socket);
+  removePlayerFromLobby(socketID, lobbyName) {
+    this.lobbies
+      .find((lobby) => lobby.name == lobbyName)
+      .removePlayer(socketID);
   }
 
   handleInput(socket, lobbyName, direction) {

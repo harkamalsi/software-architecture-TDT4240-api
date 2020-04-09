@@ -3,7 +3,8 @@ const Player = require('./Player');
 const applyCollisions = require('./Collisions');
 
 class Lobby {
-  constructor(name) {
+  constructor(io, name) {
+    this.io = io;
     this.name = name;
     this.sockets = {};
     // players have playerID and type (pacman or ghost). Object of objects.
@@ -23,26 +24,27 @@ class Lobby {
     return Object.keys(this.sockets).length;
   }
 
-  addPlayer(socket, nickname, type) {
-    this.sockets[socket.id] = socket;
+  addPlayer(socketID, nickname, type) {
+    this.sockets[socketID] = socketID;
 
     const positions = {
       x: this.generateRandomStartingPosition(),
       y: this.generateRandomStartingPosition(),
     };
 
-    this.players[socket.id] = new Player(
-      socket.id,
+    this.players[socketID] = new Player(
+      socketID,
       nickname,
       positions.x,
       positions.y,
       type
     );
+    this.io.to(socketID).emit(Constants.MSG_TYPES.PLAYER_JOINED_JOINED);
   }
 
-  removePlayer(socket) {
-    delete this.sockets[socket.id];
-    delete this.players[socket.id];
+  removePlayer(socketID) {
+    delete this.sockets[socketID];
+    delete this.players[socketID];
   }
 
   handleInput(socket, direction) {
@@ -124,7 +126,7 @@ class Lobby {
         const socket = this.sockets[playerID];
         const player = this.players[playerID];
 
-        socket.emit(
+        this.io.to(socket).emit(
           // TODO: add Constants.MSG_TYPES.GAME_UPDATE
           Constants.MSG_TYPES.GAME_UPDATE,
           this.createUpdate(player, scoreboard)

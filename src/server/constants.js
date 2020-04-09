@@ -2,6 +2,7 @@ const constants = {
   MSG_TYPES: {
     JOIN_LOBBY: 'join_lobby',
     CREATE_LOBBY: 'create_lobby',
+    PLAYER_JOINED_JOINED: 'player_joined_lobby',
     FULL_LOBBY: 'full_lobby',
     RESPAWN_PELLETS: 'respawn_pellets',
     GAME_UPDATE: 'game_update',
