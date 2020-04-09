@@ -73,10 +73,11 @@ let socketId;
 io.on('connection', (socket) => {
   // socketId = socket.id;
   console.log('Player connected!', socket.id);
+  // console.log(lobbies);
 
   socket.emit('hello', `main lobby with socketID ${socket.id}`);
 
-  socket.on(Constants.MSG_TYPES.JOIN_LOBBY, (data) => {
+  /* socket.on(Constants.MSG_TYPES.JOIN_LOBBY, (data) => {
     const { socketid, room, nickname, playerId } = data;
     clientId = playerId;
     socketId = socketid;
@@ -100,9 +101,9 @@ io.on('connection', (socket) => {
         error: `${room} is full!`,
       });
     }
-  });
+  }); */
 
-  socket.on(Constants.MSG_TYPES.CREATE_LOBBY, (data) => {
+  /* socket.on(Constants.MSG_TYPES.CREATE_LOBBY, (data) => {
     const { socketid, nickname, playerId } = data;
     clientId = playerId;
     socketId = socketid;
@@ -118,27 +119,77 @@ io.on('connection', (socket) => {
       room,
       message: `${room} with socketID ${socketId}`,
     });
-  });
+  }); */
 
-  socket.on('disconnect', () => {
+  /* socket.on('disconnect', () => {
     // Finding the room player disconnected from
+    let updateRoom;
+    console.log('before updating', socketId, clientId, true);
     if (lobbies.length > 0) {
       lobbyItem = lobbies.find((lobbyItem) =>
         lobbyItem.sockets.includes(socketId)
       );
 
-      if (lobbyItem) room = lobbyItem.room;
-      console.log('------------', room, socketId, clientId);
+      if (lobbyItem) updateRoom = lobbyItem.room;
+
+      console.log('');
+      console.log('******Updating already existing lobby on disconnect******');
+      console.log('');
+
+      console.log({ oldSockets: lobbies[0].sockets });
+      console.log(updateRoom, socketId, clientId, true);
+      updateLobbies(updateRoom, socketId, clientId, true);
+    } else {
+      console.log('');
+      console.log('******Disconnected without udpdating lobbies******');
+      console.log('');
     }
+    console.log({ newSockets: lobbies[0].sockets });
+  }); */
 
-    updateLobbies(room, socketId, clientId, true);
-
-    console.log(lobbies);
-  });
+  socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
+  socket.on(Constants.MSG_TYPES.CREATE_LOBBY, createLobby);
+  socket.on(Constants.MSG_TYPES.INPUT, handleInput);
+  socket.on('disconnect', onDisconnectLobby);
 });
 
-// Setup the Gamed
+// Using game singleton object
 const game = new Game();
+
+const joinLobby = (socket, lobbyName, nickname, type) => {
+  let lobby = game.getLobby(lobbyName);
+
+  if (
+    lobby &&
+    lobby.getPlayersCount() < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY
+  ) {
+    game.addPlayerToLobby(this, lobbyName, socket, nickname, type);
+  } else {
+    socket.emit(Constants.MSG_TYPES.FULL_LOBBY);
+  }
+};
+
+const createLobby = (socket, nickname, type) => {
+  let lobbyCounter = game.getLobbiesCounter();
+  // Lobbies will start from lobby0
+  let lobbyName = 'lobby' + lobbyCounter;
+
+  game.addLobby(this, lobbyName);
+  joinLobby(lobbyName, socket, nickname, type);
+};
+
+const handleInput = (socket, lobbyName, direction) => {
+  game.handleInput(this, socket, lobbyName, direction);
+};
+
+const onDisconnectLobby = (socket, lobbyName) => {
+  game.removePlayerFromLobby(this, socket, lobbyName);
+
+  let lobby = game.getLobby(lobbyName);
+  if (lobby.getPlayersCount() == 0) {
+    game.removeLobby(lobbyName);
+  }
+};
 
 const updateLobbies = (
   room,
@@ -230,8 +281,6 @@ const updateLobbies = (
       });
     }
   }
-
-  //console.log(lobbies);
 };
 
 const getTotalClients = () => {

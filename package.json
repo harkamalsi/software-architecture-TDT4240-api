@@ -1,5 +1,6 @@
 {
   "name": "software-architecture-TDT4240-api",
+  "homepage": "http://localhost:8080/",
   "version": "1.0.0",
   "description": "Backend logic",
   "main": "index.js",
@@ -11,7 +12,7 @@
     "server": "cd ./src/server/ && nodemon server.js",
     "server-prod": "cd ./src/server/ && node server.js",
     "start": "cd ./src/server/ && node server.js",
-    "dev": "concurrently \"npm run build\" \"npm run server \""
+    "dev": "concurrently \"npm run client\" \"npm run server \""
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,6 @@
   "bugs": {
     "url": "https://github.com/harkamalsi/software-architecture-TDT4240-api/issues"
   },
-  "homepage": "https://github.com/harkamalsi/software-architecture-TDT4240-api#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "concurrently": "^5.1.0",
@@ -31,6 +31,7 @@
     "express": "^4.17.1",
     "mongoose": "^5.9.2",
     "nodemon": "^1.19.4",
+    "shortid": "^2.2.15",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "react": "^16.13.0",
