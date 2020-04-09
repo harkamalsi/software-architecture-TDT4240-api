@@ -1,9 +1,10 @@
 const Constants = require('../constants');
+const Player = require('./Player');
 const applyCollisions = require('./Collisions');
 
 class Lobby {
-  constructor(lobbyName) {
-    this.lobbyName = lobbyName;
+  constructor(name) {
+    this.name = name;
     this.sockets = {};
     // players have playerID and type (pacman or ghost). Object of objects.
     this.players = {};
@@ -26,8 +27,8 @@ class Lobby {
     this.sockets[socket.id] = socket;
 
     const positions = {
-      x: generateRandomStartingPosition(),
-      y: generateRandomStartingPosition(),
+      x: this.generateRandomStartingPosition(),
+      y: this.generateRandomStartingPosition(),
     };
 
     this.players[socket.id] = new Player(
@@ -106,9 +107,10 @@ class Lobby {
 
     // Check if all types of pellets are eaten by pacman, if yes then pacman won and ghosts lost
     if (this.normalPellets.length == 0 && this.specialPellets.length == 0) {
-      this.sockets.forEach((socket) => {
-        socket.emit(Constants.MSG_TYPES.GAME_OVER_GHOSTS);
-      });
+      /* Object.keys(this.sockets).forEach((socket) => {
+        console.log('************', socket);
+        this.sockets[socket].emit(Constants.MSG_TYPES.GAME_OVER_GHOSTS);
+      }); */
     }
 
     // Check if any players are dead

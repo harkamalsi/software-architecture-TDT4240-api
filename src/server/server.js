@@ -155,39 +155,44 @@ io.on('connection', (socket) => {
 
 // Using game singleton object
 const game = new Game();
+game.addLobby('lobby0');
+game.addLobby('lobby1');
 
-const joinLobby = (socket, lobbyName, nickname, type) => {
+const joinLobby = (lobbyName, nickname, type) => {
   let lobby = game.getLobby(lobbyName);
 
-  if (
-    lobby &&
-    lobby.getPlayersCount() < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY
-  ) {
-    game.addPlayerToLobby(this, lobbyName, socket, nickname, type);
-  } else {
-    socket.emit(Constants.MSG_TYPES.FULL_LOBBY);
+  if (lobby) {
+    if (lobby.getPlayersCount() < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY) {
+      console.log(this, lobbyName, nickname, type);
+      game.addPlayerToLobby(socket, lobbyName, nickname, type);
+    } else {
+      socket.emit(Constants.MSG_TYPES.FULL_LOBBY);
+    }
   }
 };
 
-const createLobby = (socket, nickname, type) => {
+const createLobby = (nickname, type) => {
   let lobbyCounter = game.getLobbiesCounter();
   // Lobbies will start from lobby0
   let lobbyName = 'lobby' + lobbyCounter;
 
   game.addLobby(this, lobbyName);
-  joinLobby(lobbyName, socket, nickname, type);
+  joinLobby(lobbyName, nickname, type);
 };
 
-const handleInput = (socket, lobbyName, direction) => {
-  game.handleInput(this, socket, lobbyName, direction);
+const handleInput = (lobbyName, direction) => {
+  game.handleInput(this, lobbyName, direction);
 };
 
-const onDisconnectLobby = (socket, lobbyName) => {
-  game.removePlayerFromLobby(this, socket, lobbyName);
-
+const onDisconnectLobby = (lobbyName) => {
   let lobby = game.getLobby(lobbyName);
-  if (lobby.getPlayersCount() == 0) {
-    game.removeLobby(lobbyName);
+
+  if (lobby) {
+    game.removePlayerFromLobby(this, lobbyName);
+
+    if (lobby.getPlayersCount() == 0) {
+      game.removeLobby(lobbyName);
+    }
   }
 };
 

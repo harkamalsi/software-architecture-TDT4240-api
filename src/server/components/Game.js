@@ -11,7 +11,7 @@ class Game {
   }
 
   getLobby(lobbyName) {
-    return this.lobbies.filter((name) => name === lobbyName);
+    return this.lobbies.filter((lobby) => lobby.name === lobbyName)[0];
   }
 
   addLobby(lobbyName) {
@@ -19,16 +19,19 @@ class Game {
   }
 
   removeLobby(lobbyName) {
-    this.lobbies = this.lobbies.filter((name) => name !== lobbyName);
+    this.lobbies = this.lobbies.filter((lobby) => lobby.name !== lobbyName);
   }
 
-  addPlayerToLobby(lobbyName, socket, nickname, type) {
-    const lobby = this.lobbies.find((name) => name === lobbyName);
-    lobby.addPlayer(this, socket, nickname, type);
+  addPlayerToLobby(socket, lobbyName, nickname, type) {
+    const lobby = this.lobbies.find((lobby) => lobby.name === lobbyName);
+
+    if (lobby) {
+      lobby.addPlayer(socket, nickname, type);
+    }
   }
 
   removePlayerFromLobby(socket, lobbyName) {
-    this.lobbies.find((name) => name == lobbyName).removePlayer(socket);
+    this.lobbies.find((lobby) => lobby.name == lobbyName).removePlayer(socket);
   }
 
   handleInput(socket, lobbyName, direction) {

@@ -12,7 +12,7 @@ class App extends Component {
       playerId: '5e60f07c4538a749087c78ca',
       nickname: false,
       socket: null,
-      lobbyname: 'lobby1',
+      lobbyname: 'lobby0',
     };
   }
 
@@ -45,14 +45,16 @@ class App extends Component {
       });
   }
 
-  joinLobby(room) {
+  joinLobby(lobbyName) {
     const { socket, nickname, playerId } = this.state;
     //const room = 'lobby1';
 
-    const payload = { socketid: socket.id, room, nickname, playerId };
-
+    // const payload = { socketid: socket.id, room, nickname, playerId };
+    const payload = [socket, lobbyName, nickname, 'pacman'];
+    console.log(socket);
+    console.log('join_lobby', 'socket', lobbyName, nickname);
     // Emitting nickname to server side for joining a lobby with name
-    socket.emit('join_lobby', payload);
+    socket.emit('join_lobby', lobbyName, nickname, 'pacman');
 
     // Emitting nickname to server side for creating a lobby; not sending a name
     //console.log('Creating a lobby without providing a lobby name');
@@ -106,7 +108,7 @@ class App extends Component {
         )}
         <br />
         <br />
-        <button onClick={() => this.joinLobby('lobby1')}>Join lobby1</button>
+        <button onClick={() => this.joinLobby('lobby0')}>Join lobby1</button>
       </div>
     );
   }
