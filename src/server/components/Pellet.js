@@ -1,4 +1,4 @@
-class Object {
+class Pellet {
   constructor(id, x, y) {
     this.id = id;
     this.x = x;
@@ -13,3 +13,5 @@ class Object {
     };
   }
 }
+
+module.exports = Pellet;

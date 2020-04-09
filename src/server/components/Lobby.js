@@ -215,4 +215,4 @@ class Lobby {
   }
 }
 
-module.exports = Game;
+module.exports = Lobby;

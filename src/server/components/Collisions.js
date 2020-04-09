@@ -30,3 +30,5 @@ const applyCollisions = (players, pellets) => {
 
   return eatenPellets;
 };
+
+module.exports = applyCollisions;

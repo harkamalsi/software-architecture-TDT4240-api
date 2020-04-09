@@ -57,4 +57,4 @@ class Player {
   }
 }
 
-module.exports = Game;
+module.exports = Player;

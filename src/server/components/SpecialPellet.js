@@ -1,8 +1,7 @@
 const shortid = require('shortid');
-const ObjectClass = require('./Object');
-const Constants = require('../constants');
+const PelletClass = require('./Pellet');
 
-class SpecialPellet extends ObjectClass {
+class SpecialPellet extends PelletClass {
   constructor(parentID, x, y) {
     super(shortid(), x, y);
     this.parentID = parentID;
@@ -12,3 +11,5 @@ class SpecialPellet extends ObjectClass {
   // Returns true if pellet eaten by pacman, means clients will now destroy it from their views
   update(dt) {}
 }
+
+module.exports = SpecialPellet;
