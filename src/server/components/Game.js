@@ -39,7 +39,9 @@ class Game {
 
   handleInput(socketID, lobbyName, direction) {
     const lobby = this.lobbies.find((lobby) => lobby.name === lobbyName);
-    lobby.handleInput(socketID, direction);
+    if (lobby) {
+      lobby.handleInput(socketID, direction);
+    }
   }
 }
 

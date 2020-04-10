@@ -174,11 +174,21 @@ const joinLobby = (socketID, lobbyName, nickname, type) => {
 
 const createLobby = (socketID, nickname, type) => {
   let lobbyCounter = game.getLobbiesCounter();
-  // Lobbies will start from lobby0
+  // Lobbies will start from lobby1
   let lobbyName = 'lobby' + lobbyCounter;
+
+  let lobbyExists = game.getLobby(lobbyName);
+
+  while (lobbyExists) {
+    lobbyCounter++;
+    lobbyName = 'lobby' + lobbyCounter;
+    lobbyExists = game.getLobby(lobbyName);
+  }
 
   game.addLobby(lobbyName);
   joinLobby(socketID, lobbyName, nickname, type);
+
+  console.log({ lobbyName });
 };
 
 const handleInput = (socketID, lobbyName, direction) => {
@@ -199,6 +209,14 @@ const onDisconnectLobby = (socketID) => {
       game.removeLobby(lobby.name);
     }
   }
+
+  game.lobbies.forEach((lobbyItem) => {
+    console.log(
+      'lobbies found after a player disconneted: ',
+      lobbyItem.name,
+      lobbyItem.getPlayersCount()
+    );
+  });
 };
 
 const updateLobbies = (
