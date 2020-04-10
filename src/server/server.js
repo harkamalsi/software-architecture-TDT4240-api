@@ -157,8 +157,8 @@ io.on('connection', (socket) => {
 
 // Using game singleton object
 const game = new Game(io);
-game.addLobby('lobby0');
-game.addLobby('lobby1');
+//game.addLobby('lobby0');
+//game.addLobby('lobby1');
 
 const joinLobby = (socketID, lobbyName, nickname, type) => {
   let lobby = game.getLobby(lobbyName);
@@ -172,13 +172,13 @@ const joinLobby = (socketID, lobbyName, nickname, type) => {
   }
 };
 
-const createLobby = (nickname, type) => {
+const createLobby = (socketID, nickname, type) => {
   let lobbyCounter = game.getLobbiesCounter();
   // Lobbies will start from lobby0
   let lobbyName = 'lobby' + lobbyCounter;
 
-  game.addLobby(this, lobbyName);
-  joinLobby(lobbyName, nickname, type);
+  game.addLobby(lobbyName);
+  joinLobby(socketID, lobbyName, nickname, type);
 };
 
 const handleInput = (lobbyName, direction) => {

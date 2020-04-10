@@ -50,17 +50,18 @@ class App extends Component {
     //const room = 'lobby1';
 
     // const payload = { socketid: socket.id, room, nickname, playerId };
-    const payload = [socket, lobbyName, nickname, 'pacman'];
-    console.log(socket);
-    console.log('join_lobby', 'socket', lobbyName, nickname);
+    const payload = [socket.id, lobbyName, nickname, 'pacman'];
     // Emitting nickname to server side for joining a lobby with name
-    socket.emit('join_lobby', socket.id, lobbyName, nickname, 'pacman');
+    // socket.emit('join_lobby', ...payload);
+
+    socket.emit('create_lobby', socket.id, nickname, 'pacman');
 
     // Emitting nickname to server side for creating a lobby; not sending a name
     //console.log('Creating a lobby without providing a lobby name');
     //socket.emit('create_lobby', { socketid: socket.id, nickname, playerId });
 
     this.fetchUpdates('player_joined_lobby');
+    // this.fetchUpdates('player_joined_lobby');
 
     this.state.socket.on('full_lobby', (data) => {
       console.log(data);
