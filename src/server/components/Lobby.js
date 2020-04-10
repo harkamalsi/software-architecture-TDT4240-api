@@ -47,9 +47,9 @@ class Lobby {
     delete this.players[socketID];
   }
 
-  handleInput(socket, direction) {
-    if (this.players[socket.id]) {
-      this.players[socket.id].setDirection(direction);
+  handleInput(socketID, direction) {
+    if (this.players[socketID]) {
+      this.players[socketID].setDirection(direction);
     }
   }
 

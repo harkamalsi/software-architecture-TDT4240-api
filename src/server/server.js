@@ -181,8 +181,8 @@ const createLobby = (socketID, nickname, type) => {
   joinLobby(socketID, lobbyName, nickname, type);
 };
 
-const handleInput = (lobbyName, direction) => {
-  game.handleInput(this, lobbyName, direction);
+const handleInput = (socketID, lobbyName, direction) => {
+  game.handleInput(socketID, lobbyName, direction);
 };
 
 const onDisconnectLobby = (socketID) => {

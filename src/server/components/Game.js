@@ -37,8 +37,9 @@ class Game {
       .removePlayer(socketID);
   }
 
-  handleInput(socket, lobbyName, direction) {
-    this.lobbies[lobbyName].handleInput(socket, direction);
+  handleInput(socketID, lobbyName, direction) {
+    const lobby = this.lobbies.find((lobby) => lobby.name === lobbyName);
+    lobby.handleInput(socketID, direction);
   }
 }
 

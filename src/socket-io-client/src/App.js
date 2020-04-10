@@ -56,6 +56,9 @@ class App extends Component {
 
     socket.emit('create_lobby', socket.id, nickname, 'pacman');
 
+    let direction = Math.random() * 2 * Math.PI;
+    socket.emit('input', socket.id, 'lobby0', direction);
+
     // Emitting nickname to server side for creating a lobby; not sending a name
     //console.log('Creating a lobby without providing a lobby name');
     //socket.emit('create_lobby', { socketid: socket.id, nickname, playerId });
