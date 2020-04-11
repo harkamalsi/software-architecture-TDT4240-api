@@ -5,6 +5,7 @@ const socketio = require('socket.io');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+const Player = require('../models/player.model');
 const Game = require('./components/Game');
 const Constants = require('./constants');
 
@@ -229,13 +230,142 @@ const onDisconnectLobby = (socketID) => {
   });
 };
 
-// TODO: Implement following methods
+const getAllPlayers = async (socketID, limit) => {
+  let limit = parseInt(limit) || 10;
+  const players = await Player.find().limit(limit);
 
-const getAllPlayers = () => {};
-const addPlayer = () => {};
-const updatePlayer = () => {};
-const getPlayerWithNickname = () => {};
-const getPlayerWithID = () => {};
+  io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, players);
+};
+
+const addPlayer = (socketID, nickname) => {
+  let pacmanScore, ghostScore, pacmanTeamScore, ghostTeamScore;
+  pacmanScore = ghostScore = pacmanTeamScore = ghostTeamScore = 0;
+
+  let newPlayer = new Player({
+    nickname,
+    spScore: [pacmanScore, ghostScore],
+    mpScore: [pacmanTeamScore, ghostTeamScore],
+  });
+
+  Player.exists({ nickname }).then((exists) => {
+    if (exists) {
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+        error: 'Nickname already in use!',
+      });
+    } else {
+      newPlayer
+        .save()
+        .then((player) =>
+          io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, player)
+        )
+        .then(console.log('Player added!'))
+        .catch((err) =>
+          io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+            error: err,
+          })
+        );
+    }
+  });
+};
+
+const updatePlayer = (socketID, id, nickname) => {
+  let changeNickname = false;
+
+  // Checking if client want to change nickname or not
+  Player.findById(id)
+    .then((player) => {
+      if (player.nickname !== nickname) {
+        changeNickname = !changeNickname;
+      }
+    })
+    .then((response) => {
+      if (changeNickname) {
+        Player.exists({ nickname }).then((exists) => {
+          if (exists) {
+            io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+              error: 'Nickname already in use!',
+            });
+          } else {
+            Player.findByIdAndUpdate(
+              id,
+              {
+                nickname,
+                spScore: req.body.spScore,
+                mpScore: req.body.mpScore,
+              },
+              { new: true },
+              (err, result) => {
+                if (err) {
+                  io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+                    error: err,
+                  });
+                } else {
+                  io.to(socketID).emit(
+                    Constants.MSG_TYPES.DATABASE_UPDATE,
+                    result
+                  );
+                  console.log('Player score and nickname updated!');
+                }
+              }
+            );
+          }
+        });
+      } else {
+        Player.findByIdAndUpdate(
+          id,
+          {
+            // Forcing to not update nickname here. A query to mongoDB must be made first to check it new nickname is valid or not.
+            spScore: req.body.spScore,
+            mpScore: req.body.mpScore,
+          },
+          { new: true },
+          (err, result) => {
+            if (err) {
+              io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+                error: err,
+              });
+            } else {
+              io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, result);
+              console.log('Player score updated!');
+            }
+          }
+        );
+      }
+    })
+    .catch((err) =>
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+        error: err,
+      })
+    );
+
+  changeNickname != changeNickname;
+};
+
+const getPlayerWithNickname = (socketID, nickname) => {
+  Player.find({ nickname: { $regex: nickname, $options: 'i' } })
+    .then((player) =>
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, player)
+    )
+    .catch((err) =>
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+        error: err,
+      })
+    );
+};
+
+const getPlayerWithID = (socketID, id) => {
+  Player.findById(id)
+    .then((player) =>
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, player)
+    )
+    .catch((err) =>
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+        error: err,
+      })
+    );
+};
+
+// Old functions, currently not used
 
 const updateLobbies = (
   room,
