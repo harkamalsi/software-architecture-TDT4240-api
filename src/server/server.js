@@ -150,6 +150,16 @@ io.on('connection', (socket) => {
   socket.on(Constants.MSG_TYPES.JOIN_LOBBY, joinLobby);
   socket.on(Constants.MSG_TYPES.CREATE_LOBBY, createLobby);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
+
+  socket.on(Constants.DATABASE_MSG_TYPES.GET_ALL_PLAYERS, getAllPlayers);
+  socket.on(Constants.DATABASE_MSG_TYPES.ADD_PLAYER, addPlayer);
+  socket.on(Constants.DATABASE_MSG_TYPES.UPDATE_PLAYER, updatePlayer);
+  socket.on(
+    Constants.DATABASE_MSG_TYPES.GET_PLAYER_WITH_NICKNAME,
+    getPlayerWithNickname
+  );
+  socket.on(Constants.DATABASE_MSG_TYPES.GET_PLAYER_WITH_ID, getPlayerWithID);
+
   socket.on('disconnect', () => {
     onDisconnectLobby(socket.id);
   });
@@ -218,6 +228,14 @@ const onDisconnectLobby = (socketID) => {
     );
   });
 };
+
+// TODO: Implement following methods
+
+const getAllPlayers = () => {};
+const addPlayer = () => {};
+const updatePlayer = () => {};
+const getPlayerWithNickname = () => {};
+const getPlayerWithID = () => {};
 
 const updateLobbies = (
   room,
