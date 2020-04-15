@@ -5,7 +5,7 @@ const socketio = require('socket.io');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const Player = require('../models/player.model');
+const Player = require('./models/player.model');
 const Game = require('./components/Game');
 const Constants = require('./constants');
 
@@ -155,6 +155,8 @@ io.on('connection', (socket) => {
   socket.on(Constants.DATABASE_MSG_TYPES.GET_ALL_PLAYERS, getAllPlayers);
   socket.on(Constants.DATABASE_MSG_TYPES.ADD_PLAYER, addPlayer);
   socket.on(Constants.DATABASE_MSG_TYPES.UPDATE_PLAYER, updatePlayer);
+  socket.on(Constants.DATABASE_MSG_TYPES.CHANGE_NICKNAME, changeNickname);
+  socket.on(Constants.DATABASE_MSG_TYPES.CHANGE_SKINTYPE, changeSkinType);
   socket.on(
     Constants.DATABASE_MSG_TYPES.GET_PLAYER_WITH_NICKNAME,
     getPlayerWithNickname
@@ -171,7 +173,9 @@ const game = new Game(io);
 //game.addLobby('lobby0');
 //game.addLobby('lobby1');
 
-const joinLobby = (socketID, lobbyName, nickname, type) => {
+const joinLobby = (socketID, inputs) => {
+  const { lobbyName, nickname, type } = inputs;
+
   let lobby = game.getLobby(lobbyName);
 
   if (lobby) {
@@ -183,7 +187,8 @@ const joinLobby = (socketID, lobbyName, nickname, type) => {
   }
 };
 
-const createLobby = (socketID, nickname, type) => {
+const createLobby = (socketID, inputs) => {
+  const { nickname, type } = inputs;
   let lobbyCounter = game.getLobbiesCounter();
   // Lobbies will start from lobby1
   let lobbyName = 'lobby' + lobbyCounter;
@@ -197,12 +202,13 @@ const createLobby = (socketID, nickname, type) => {
   }
 
   game.addLobby(lobbyName);
-  joinLobby(socketID, lobbyName, nickname, type);
+  joinLobby(socketID, { lobbyName, nickname, type });
 
   console.log({ lobbyName });
 };
 
-const handleInput = (socketID, lobbyName, direction) => {
+const handleInput = (socketID, inputs) => {
+  const { lobbyName, direction } = inputs;
   game.handleInput(socketID, lobbyName, direction);
 };
 
@@ -231,8 +237,8 @@ const onDisconnectLobby = (socketID) => {
 };
 
 const getAllPlayers = async (socketID, limit) => {
-  let limit = parseInt(limit) || 10;
-  const players = await Player.find().limit(limit);
+  let playersLimit = parseInt(limit) || 10;
+  const players = await Player.find().limit(playersLimit);
 
   io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, players);
 };
@@ -268,7 +274,10 @@ const addPlayer = (socketID, nickname) => {
   });
 };
 
-const updatePlayer = (socketID, id, nickname) => {
+const updatePlayer = (socketID, inputs) => {
+  const { id, nickname, spScore, mpScore } = inputs;
+  console.log({ socketID, id, nickname, spScore, mpScore });
+
   let changeNickname = false;
 
   // Checking if client want to change nickname or not
@@ -282,6 +291,7 @@ const updatePlayer = (socketID, id, nickname) => {
       if (changeNickname) {
         Player.exists({ nickname }).then((exists) => {
           if (exists) {
+            console.log({ exists });
             io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
               error: 'Nickname already in use!',
             });
@@ -341,16 +351,64 @@ const updatePlayer = (socketID, id, nickname) => {
   changeNickname != changeNickname;
 };
 
-const getPlayerWithNickname = (socketID, nickname) => {
-  Player.find({ nickname: { $regex: nickname, $options: 'i' } })
+const changeNickname = (socketID, id, nickname) => {
+  let playerNicknameExists = false;
+  Player.exists({ nickname }).then((exists) => {
+    if (exists) {
+      console.log({ exists });
+      playerNicknameExists = !playerNicknameExists;
+
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+        error: 'Nickname already in use!',
+      });
+    } else {
+      Player.findByIdAndUpdate(
+        id,
+        {
+          nickname,
+        },
+        { new: true },
+        (err, result) => {
+          if (err) {
+            io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+              error: err,
+            });
+          } else {
+            io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, result);
+            console.log('Player score and nickname updated!');
+          }
+        }
+      );
+    }
+  });
+};
+
+const changeSkinType = (socketID, id, skinType) => {
+  Player.findByIdAndUpdate(
+    id,
+    {
+      skinType,
+    },
+    { new: true }
+  )
     .then((player) =>
       io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, player)
     )
-    .catch((err) =>
+    .catch((err) => {
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, { err });
+    });
+};
+
+const getPlayerWithNickname = (socketID, nickname) => {
+  Player.findOne({ nickname: { $regex: nickname, $options: 'i' } })
+    .then((player) => {
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, player);
+    })
+    .catch((err) => {
       io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
         error: err,
-      })
-    );
+      });
+    });
 };
 
 const getPlayerWithID = (socketID, id) => {

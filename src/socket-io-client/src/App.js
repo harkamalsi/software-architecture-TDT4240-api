@@ -54,10 +54,13 @@ class App extends Component {
     // Emitting nickname to server side for joining a lobby with name
     // socket.emit('join_lobby', ...payload);
 
-    socket.emit('create_lobby', socket.id, nickname, 'pacman');
+    socket.emit('create_lobby', socket.id, {
+      nickname: nickname,
+      type: 'pacman',
+    });
 
     let direction = Math.random() * 2 * Math.PI;
-    socket.emit('input', socket.id, 'lobby0', direction);
+    socket.emit('input', socket.id, { lobbyName: 'lobby0', direction });
 
     // Emitting nickname to server side for creating a lobby; not sending a name
     //console.log('Creating a lobby without providing a lobby name');
@@ -69,6 +72,13 @@ class App extends Component {
     this.state.socket.on('full_lobby', (data) => {
       console.log(data);
       this.setState({ response1: 'full_lobby' });
+    });
+  }
+
+  gameUpdate() {
+    this.state.socket.on('game_update', (data) => {
+      console.log(data);
+      this.setState({ response1: 'game_update' });
     });
   }
 
@@ -117,6 +127,7 @@ class App extends Component {
         <br />
         <br />
         <button onClick={() => this.joinLobby('lobby0')}>Join lobby1</button>
+        <button onClick={() => this.gameUpdate()}>Game update</button>
       </div>
     );
   }

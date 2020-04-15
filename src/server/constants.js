@@ -17,6 +17,8 @@ const constants = {
     UPDATE_PLAYER: 'update_player',
     GET_PLAYER_WITH_NICKNAME: 'get_player_with_nickname',
     GET_PLAYER_WITH_ID: 'get_player_with_id',
+    CHANGE_NICKNAME: 'change_nickname',
+    CHANGE_SKINTYPE: 'change_skin_type',
   },
   MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY: 5,
   GHOST_SPEED: 1,

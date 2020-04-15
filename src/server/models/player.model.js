@@ -5,10 +5,14 @@ const Schema = mongoose.Schema;
 const playerSchema = new Schema({
   nickname: {
     type: String,
-    required: true
+    required: true,
   },
   spScore: [],
-  mpScore: []
+  mpScore: [],
+  skinType: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model('players', playerSchema);
