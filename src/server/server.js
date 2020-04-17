@@ -148,6 +148,7 @@ io.on('connection', (socket) => {
     console.log({ newSockets: lobbies[0].sockets });
   }); */
 
+  socket.on(Constants.MSG_TYPES.GET_GAME_LOBBIES, getGameLobbies);
   socket.on(Constants.MSG_TYPES.JOIN_LOBBY, joinLobby);
   socket.on(Constants.MSG_TYPES.CREATE_LOBBY, createLobby);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
@@ -173,6 +174,13 @@ const game = new Game(io);
 //game.addLobby('lobby0');
 //game.addLobby('lobby1');
 
+const getGameLobbies = (socketID) => {
+  io.to(socketID).emit(
+    Constants.MSG_TYPES.DATABASE_UPDATE,
+    JSON.stringify(game.getLobbies())
+  );
+};
+
 const joinLobby = (socketID, inputs) => {
   const { lobbyName, nickname, type } = inputs;
 
@@ -189,6 +197,7 @@ const joinLobby = (socketID, inputs) => {
 
 const createLobby = (socketID, inputs) => {
   const { nickname, type } = inputs;
+  console.log({ socketID, nickname, type });
   let lobbyCounter = game.getLobbiesCounter();
   // Lobbies will start from lobby1
   let lobbyName = 'lobby' + lobbyCounter;

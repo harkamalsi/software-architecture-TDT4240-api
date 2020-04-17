@@ -11,6 +11,10 @@ class Game {
     return this.lobbies.length;
   }
 
+  getLobbies() {
+    return this.lobbies;
+  }
+
   getLobby(lobbyName) {
     return this.lobbies.filter((lobby) => lobby.name === lobbyName)[0];
   }
