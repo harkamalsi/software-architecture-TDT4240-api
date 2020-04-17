@@ -175,10 +175,9 @@ const game = new Game(io);
 //game.addLobby('lobby1');
 
 const getGameLobbies = (socketID) => {
-  io.to(socketID).emit(
-    Constants.MSG_TYPES.DATABASE_UPDATE,
-    JSON.stringify(game.getLobbies())
-  );
+  let lobbies = game.getLobbies();
+  console.log(lobbies);
+  io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, lobbies);
 };
 
 const joinLobby = (socketID, inputs) => {
