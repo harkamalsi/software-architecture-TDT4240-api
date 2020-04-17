@@ -12,7 +12,7 @@ class Game {
   }
 
   getLobbies() {
-    return this.lobbies;
+    return this.lobbies.map((lobby) => lobby.name);
   }
 
   getLobby(lobbyName) {

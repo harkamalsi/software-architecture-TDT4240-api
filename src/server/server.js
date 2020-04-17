@@ -196,7 +196,6 @@ const joinLobby = (socketID, inputs) => {
 
 const createLobby = (socketID, inputs) => {
   const { nickname, type } = inputs;
-  console.log({ socketID, nickname, type });
   let lobbyCounter = game.getLobbiesCounter();
   // Lobbies will start from lobby1
   let lobbyName = 'lobby' + lobbyCounter;
