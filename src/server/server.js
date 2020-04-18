@@ -207,7 +207,9 @@ const createLobby = (socketID, inputs) => {
     lobbyExists = game.getLobby(lobbyName);
   }
 
-  game.addLobby(lobbyName);
+  if (game.getLobbiesCounter() < 5) {
+    game.addLobby(lobbyName);
+  }
   joinLobby(socketID, { lobbyName, nickname, type });
 
   console.log({ lobbyName });
