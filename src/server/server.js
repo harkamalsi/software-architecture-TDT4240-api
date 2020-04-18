@@ -176,8 +176,7 @@ const game = new Game(io);
 
 const getGameLobbies = (socketID) => {
   let lobbies = game.getLobbies();
-  console.log(lobbies);
-  io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, lobbies);
+  io.to(socketID).emit(Constants.MSG_TYPES.GET_GAME_LOBBIES, lobbies);
 };
 
 const joinLobby = (socketID, inputs) => {
@@ -198,13 +197,13 @@ const createLobby = (socketID, inputs) => {
   const { nickname, type } = inputs;
   let lobbyCounter = game.getLobbiesCounter();
   // Lobbies will start from lobby1
-  let lobbyName = 'lobby' + lobbyCounter;
+  let lobbyName = 'Lobby' + lobbyCounter;
 
   let lobbyExists = game.getLobby(lobbyName);
 
   while (lobbyExists) {
     lobbyCounter++;
-    lobbyName = 'lobby' + lobbyCounter;
+    lobbyName = 'Lobby' + lobbyCounter;
     lobbyExists = game.getLobby(lobbyName);
   }
 
@@ -221,26 +220,25 @@ const handleInput = (socketID, inputs) => {
 
 const onDisconnectLobby = (socketID) => {
   let lobby = game.lobbies.find((lobbyItem) => {
-    if (lobbyItem.sockets.hasOwnProperty(socketID)) {
+    if (socketID in lobbyItem.sockets) {
       return true;
     }
   });
 
+  let lobbyName;
   if (lobby) {
-    game.removePlayerFromLobby(socketID, lobby.name);
+    lobbyName = lobby.name;
+  }
 
-    if (lobby.getPlayersCount() == 0) {
-      game.removeLobby(lobby.name);
+  if (lobbyName) {
+    game.removePlayerFromLobby(socketID, lobbyName);
+
+    if (game.getLobby(lobbyName).getPlayersCount() == 0) {
+      game.removeLobby(lobbyName);
     }
   }
 
-  game.lobbies.forEach((lobbyItem) => {
-    console.log(
-      'lobbies found after a player disconneted: ',
-      lobbyItem.name,
-      lobbyItem.getPlayersCount()
-    );
-  });
+  console.log('lobbies found after a player disconneted: ', game.getLobbies());
 };
 
 const getAllPlayers = async (socketID, limit) => {

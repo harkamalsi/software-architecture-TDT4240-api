@@ -9,7 +9,7 @@ class App extends Component {
       response1: false,
       endpoint: 'http://localhost:8080',
       // endpoint: 'https://inverse-pacman-api.herokuapp.com',
-      playerId: '5e60f07c4538a749087c78ca',
+      playerId: '5e9770131c6f8c00179f12f4',
       nickname: false,
       socket: null,
       lobbyname: 'lobby0',
@@ -42,7 +42,8 @@ class App extends Component {
       .then((nickname) => {
         this.setState({ nickname });
         return nickname;
-      });
+      })
+      .catch((err) => console.log(err));
   }
 
   joinLobby(lobbyName) {
@@ -52,7 +53,11 @@ class App extends Component {
     // const payload = { socketid: socket.id, room, nickname, playerId };
     const payload = [socket.id, lobbyName, nickname, 'pacman'];
     // Emitting nickname to server side for joining a lobby with name
-    // socket.emit('join_lobby', ...payload);
+    /* socket.emit('join_lobby', socket.id, {
+      lobbyName: 'Lobby0',
+      nickname: nickname,
+      type: 'pacman',
+    }); */
 
     socket.emit('create_lobby', socket.id, {
       nickname: nickname,
@@ -75,10 +80,26 @@ class App extends Component {
     });
   }
 
+  createLobby() {
+    const { socket, nickname, playerId } = this.state;
+
+    socket.emit('create_lobby', { socketid: socket.id, nickname, playerId });
+  }
+
   gameUpdate() {
     this.state.socket.on('game_update', (data) => {
       console.log(data);
       this.setState({ response1: 'game_update' });
+    });
+  }
+
+  getLobbies() {
+    const { socket } = this.state;
+
+    socket.emit('get_game_lobbies', socket.id);
+
+    this.state.socket.on('get_game_lobbies', (data) => {
+      console.log(data);
     });
   }
 
@@ -126,8 +147,10 @@ class App extends Component {
         )}
         <br />
         <br />
+        {/* <button onClick={() => this.createLobby()}>Create lobby</button> */}
         <button onClick={() => this.joinLobby('lobby0')}>Join lobby1</button>
         <button onClick={() => this.gameUpdate()}>Game update</button>
+        <button onClick={() => this.getLobbies()}>Get lobbies</button>
       </div>
     );
   }

@@ -12,7 +12,11 @@ class Game {
   }
 
   getLobbies() {
-    return this.lobbies.map((lobby) => lobby.name);
+    return this.lobbies.map((lobby) => {
+      let lobbyName = lobby.name;
+      let lobbyPlayers = `${lobby.getPlayersCount()}/5`;
+      return { lobbyName, lobbyPlayers };
+    });
   }
 
   getLobby(lobbyName) {
