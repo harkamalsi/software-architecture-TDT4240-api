@@ -207,12 +207,23 @@ const createLobby = (socketID, inputs) => {
     lobbyExists = game.getLobby(lobbyName);
   }
 
-  if (game.getLobbiesCounter() < 5) {
-    game.addLobby(lobbyName);
-  }
-  joinLobby(socketID, { lobbyName, nickname, type });
+  let socketInsideAnotherLobbyExists = game.lobbies.find((lobby) => {
+    console.log(lobby.playerExists(socketID));
+    return lobby.playerExists(socketID);
+  });
 
-  console.log({ lobbyName });
+  if (socketInsideAnotherLobbyExists) {
+    socketInsideAnotherLobbyExists = socketInsideAnotherLobbyExists.name;
+  }
+
+  if (
+    game.getLobbiesCounter() < 5 &&
+    socketInsideAnotherLobbyExists == undefined
+  ) {
+    game.addLobby(lobbyName);
+    joinLobby(socketID, { lobbyName, nickname, type });
+    console.log({ lobbyName });
+  }
 };
 
 const handleInput = (socketID, inputs) => {
@@ -240,7 +251,8 @@ const onDisconnectLobby = (socketID) => {
     }
   }
 
-  console.log('lobbies found after a player disconneted: ', game.getLobbies());
+  console.log('lobbies found after a player disconneted:');
+  console.log(game.getLobbies());
 };
 
 const getAllPlayers = async (socketID, limit) => {

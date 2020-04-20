@@ -24,6 +24,10 @@ class Lobby {
     return Object.keys(this.sockets).length;
   }
 
+  playerExists(socketID) {
+    return Object.keys(this.sockets).includes(socketID);
+  }
+
   addPlayer(socketID, nickname, type) {
     this.sockets[socketID] = socketID;
 
