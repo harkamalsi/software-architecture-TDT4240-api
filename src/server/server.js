@@ -184,8 +184,21 @@ const joinLobby = (socketID, inputs) => {
 
   let lobby = game.getLobby(lobbyName);
 
+  let socketInsideAnotherLobbyExists = game.lobbies.find((lobby) => {
+    {
+      return lobby.playerExists(socketID);
+    }
+  });
+
+  if (socketInsideAnotherLobbyExists) {
+    socketInsideAnotherLobbyExists = socketInsideAnotherLobbyExists.name;
+  }
+
   if (lobby) {
-    if (lobby.getPlayersCount() < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY) {
+    if (
+      lobby.getPlayersCount() < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY &&
+      socketInsideAnotherLobbyExists == undefined
+    ) {
       game.addPlayerToLobby(socketID, lobbyName, nickname, type);
     } else {
       io.to(socketID).emit(Constants.MSG_TYPES.FULL_LOBBY);
@@ -195,7 +208,7 @@ const joinLobby = (socketID, inputs) => {
 
 const createLobby = (socketID, inputs) => {
   const { nickname, type } = inputs;
-  let lobbyCounter = game.getLobbiesCounter();
+  let lobbyCounter = game.getLobbiesCounter() + 1;
   // Lobbies will start from lobby1
   let lobbyName = 'Lobby' + lobbyCounter;
 
@@ -208,7 +221,6 @@ const createLobby = (socketID, inputs) => {
   }
 
   let socketInsideAnotherLobbyExists = game.lobbies.find((lobby) => {
-    console.log(lobby.playerExists(socketID));
     return lobby.playerExists(socketID);
   });
 
@@ -217,7 +229,7 @@ const createLobby = (socketID, inputs) => {
   }
 
   if (
-    game.getLobbiesCounter() < 5 &&
+    game.getLobbiesCounter() < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY &&
     socketInsideAnotherLobbyExists == undefined
   ) {
     game.addLobby(lobbyName);
