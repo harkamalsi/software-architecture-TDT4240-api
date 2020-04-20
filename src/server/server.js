@@ -232,22 +232,19 @@ const handleInput = (socketID, inputs) => {
 };
 
 const onDisconnectLobby = (socketID) => {
-  let lobby = game.lobbies.find((lobbyItem) => {
-    if (socketID in lobbyItem.sockets) {
-      return true;
-    }
+  let lobby = game.lobbies.find((lobby) => {
+    return lobby.playerExists(socketID);
   });
 
-  let lobbyName;
   if (lobby) {
-    lobbyName = lobby.name;
+    lobby = lobby.name;
   }
 
-  if (lobbyName) {
-    game.removePlayerFromLobby(socketID, lobbyName);
+  if (lobby) {
+    game.removePlayerFromLobby(socketID, lobby);
 
-    if (game.getLobby(lobbyName).getPlayersCount() == 0) {
-      game.removeLobby(lobbyName);
+    if (game.getLobby(lobby).getPlayersCount() == 0) {
+      game.removeLobby(lobby);
     }
   }
 
