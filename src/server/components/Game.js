@@ -32,7 +32,8 @@ class Game {
   }
 
   addPlayerToLobby(socketID, lobbyName, nickname, type) {
-    if (this.getLobby(lobbyName)) {
+    let lobby = this.getLobby(lobbyName);
+    if (lobby) {
       lobby.addPlayer(socketID, nickname, type);
     }
   }
@@ -42,6 +43,7 @@ class Game {
   }
 
   handleInput(socketID, lobbyName, direction) {
+    let lobby = this.getLobby(lobbyName);
     if (this.getLobby(lobbyName)) {
       lobby.handleInput(socketID, direction);
     }
