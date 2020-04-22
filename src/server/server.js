@@ -281,10 +281,10 @@ const onDisconnectLobby = (socketID) => {
 const getAllPlayers = (socketID) => {
   Player.find()
     .then((players) =>
-      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, players)
+      io.to(socketID).emit(Constants.MSG_TYPES.GET_ALL_PLAYERS, players)
     )
     .catch((err) =>
-      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+      io.to(socketID).emit(Constants.MSG_TYPES.GET_ALL_PLAYERS, {
         error: err,
       })
     );
