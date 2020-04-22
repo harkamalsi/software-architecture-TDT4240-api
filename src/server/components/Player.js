@@ -48,9 +48,10 @@ class Player {
   serializeForUpdate() {
     return {
       id: this.id,
+      nickname: this.nickname,
       /*       x: this.x,
       y: this.y, */
-      direction: this.direction,
+      directions: this.direction,
       //hp: this.hp,
     };
   }
