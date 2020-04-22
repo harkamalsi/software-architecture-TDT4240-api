@@ -23,6 +23,10 @@ class Game {
     return this.lobbies.find((lobby) => lobby.name == lobbyName);
   }
 
+  getLobbyNameFromSocket(socketID) {
+    return this.lobbies.find((lobby) => lobby.playerExists(socketID)).name;
+  }
+
   addLobby(lobbyName) {
     this.lobbies.push(new Lobby(this.io, lobbyName));
   }

@@ -245,6 +245,11 @@ const createLobby = (socketID, inputs) => {
   }
 };
 
+const getLobby = (socketID) => {
+  let lobby = game.getLobbyNameFromSocket(socketID);
+  io.to(socketID).emit(Constants.MSG_TYPES.GET_GAME_LOBBIES, lobbies);
+};
+
 const handleInput = (socketID, inputs) => {
   const { lobbyName, direction } = inputs;
   game.handleInput(socketID, lobbyName, direction);
@@ -459,26 +464,26 @@ const getPlayerWithID = (socketID, id) => {
 };
 
 const updateHighscore = (socketID, inputs) => {
-  const { id, nickname, spScore, mpScore } = inputs;
+  const { id, spScore, mpScore } = inputs;
 
-  Player.findByIdAndUpdate(
-    id,
-    {
-      spScore,
-      mpScore,
-    },
-    { new: true },
-    (err, result) => {
-      if (err) {
-        io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
-          error: err,
-        });
-      } else {
-        io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, result);
-        console.log('Player score updated!');
-      }
+  let updateVars = {};
+  if (spScore == -1) {
+    updateVars = { mpScore };
+  }
+  if (mpScore == -1) {
+    updateVars = { spScore };
+  }
+
+  Player.findByIdAndUpdate(id, updateVars, { new: true }, (err, result) => {
+    if (err) {
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+        error: err,
+      });
+    } else {
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, result);
+      console.log('Player score updated!');
     }
-  );
+  });
 };
 
 // Old functions, currently not used
