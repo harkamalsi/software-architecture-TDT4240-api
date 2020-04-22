@@ -279,7 +279,7 @@ const onDisconnectLobby = (socketID) => {
 };
 
 const getAllPlayers = (socketID) => {
-  Player.findAll()
+  Player.find()
     .then((players) =>
       io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, players)
     )
