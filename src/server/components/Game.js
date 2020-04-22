@@ -5,6 +5,7 @@ class Game {
   constructor(io) {
     this.lobbies = [];
     this.io = io;
+    this.counter = this.lobbies.length + 1;
   }
 
   getLobbiesCounter() {

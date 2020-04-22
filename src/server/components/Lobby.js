@@ -132,7 +132,7 @@ class Lobby {
 
         this.io.to(socket).emit(
           // TODO: add Constants.MSG_TYPES.GAME_UPDATE
-          Constants.MSG_TYPES.GAME_UPDATE,
+          Constants.MSG_TYPES.GAME_UPDATE + `_${this.name}`,
           this.createUpdate(player, scoreboard)
         );
       });
