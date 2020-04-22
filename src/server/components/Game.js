@@ -48,7 +48,7 @@ class Game {
 
   handleInput(socketID, lobbyName, direction) {
     let lobby = this.getLobby(lobbyName);
-    if (this.getLobby(lobbyName)) {
+    if (lobby) {
       lobby.handleInput(socketID, direction);
     }
   }

@@ -6,7 +6,7 @@ class Player {
     this.nickname = nickname;
     this.x = x;
     this.y = y;
-    this.direction = Math.random() * 2 * Math.PI;
+    this.direction = [];
     this.type = type;
 
     if (type == 'ghost') {
@@ -24,9 +24,8 @@ class Player {
   // Updates the movement and scores of player
   update(dt) {
     // updating movement
-    this.x += dt * this.speed * Math.sin(this.direction);
-    this.y -= dt * this.speed * Math.cos(this.direction);
-
+    //this.x += dt * this.speed * Math.sin(this.direction);
+    //this.y -= dt * this.speed * Math.cos(this.direction);
     // TODO: Do we need to implement staying in bounds on server side? It does minimize risks of hacking.
   }
 
@@ -49,10 +48,10 @@ class Player {
   serializeForUpdate() {
     return {
       id: this.id,
-      x: this.x,
-      y: this.y,
+      /*       x: this.x,
+      y: this.y, */
       direction: this.direction,
-      hp: this.hp,
+      //hp: this.hp,
     };
   }
 }

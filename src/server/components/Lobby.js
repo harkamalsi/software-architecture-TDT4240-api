@@ -72,11 +72,11 @@ class Lobby {
     // this.updatePellets(dt, 'special');
 
     // Update each player
-    this.updatePlayers(dt);
+    //this.updatePlayers(dt);
 
     // Apply collisions, give pacman score for eating pellets
     // TODO: Code is repeated here! Can simplify here.
-    const eatenNormalPellets = applyCollisions(
+    /* const eatenNormalPellets = applyCollisions(
       // Only pacman from this.players will be used
       Object.values(this.players),
       this.normalPellets
@@ -92,9 +92,9 @@ class Lobby {
       if (this.players[pellet.parentID]) {
         this.players[pellet.parentID].onEatenPellet('normal');
       }
-    });
+    }); */
 
-    // Updates the normalPellets array (not the pellets inner variables)
+    /* // Updates the normalPellets array (not the pellets inner variables)
     this.normalPellets = this.normalPellets.filter(
       (pellet) => !eatenNormalPellets.includes(pellet)
     );
@@ -105,19 +105,19 @@ class Lobby {
         this.players[pellet.parentID].onEatenPellet('special');
       }
     });
-
-    // Updates the normalPellets array (not the pellets inner variables)
+ */
+    /* // Updates the normalPellets array (not the pellets inner variables)
     this.specialPellets = this.specialPellets.filter(
       (pellet) => !eatenSpecialPellets.includes(pellet)
-    );
+    ); */
 
     // Check if all types of pellets are eaten by pacman, if yes then pacman won and ghosts lost
-    if (this.normalPellets.length == 0 && this.specialPellets.length == 0) {
-      /* Object.keys(this.sockets).forEach((socket) => {
+    //if (this.normalPellets.length == 0 && this.specialPellets.length == 0) {
+    /* Object.keys(this.sockets).forEach((socket) => {
         console.log('************', socket);
         this.sockets[socket].emit(Constants.MSG_TYPES.GAME_OVER_GHOSTS);
       }); */
-    }
+    //}
 
     // Check if any players are dead
     // TODO: implement the following for ghosts-pacman
@@ -169,7 +169,7 @@ class Lobby {
       player.update(dt);
 
       // updating score for ghosts for pacman see onEatenPellet
-      if (player.type == 'ghost') {
+      /* if (player.type == 'ghost') {
         // dt = (Date.now() - this.lastUpdateTime) / 1000;
         this.score += dt;
       } else {
@@ -178,7 +178,7 @@ class Lobby {
             socket.emit(Constants.MSG_TYPES.GAME_OVER_PACMAN);
           });
         }
-      }
+      } */
 
       /* const newPellet = player.update(dt);
       // TODO: newPellet should be a dict!

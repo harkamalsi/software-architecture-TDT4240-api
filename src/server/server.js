@@ -248,7 +248,8 @@ const createLobby = (socketID, inputs) => {
 
 const getLobby = (socketID) => {
   let lobby = game.getLobbyNameFromSocket(socketID);
-  io.to(socketID).emit(Constants.MSG_TYPES.GET_GAME_LOBBIES, lobbies);
+  console.log(lobby);
+  io.to(socketID).emit(Constants.MSG_TYPES.GET_LOBBY, { lobby });
 };
 
 const handleInput = (socketID, inputs) => {
@@ -277,11 +278,16 @@ const onDisconnectLobby = (socketID) => {
   console.log(game.getLobbies());
 };
 
-const getAllPlayers = async (socketID, limit) => {
-  let playersLimit = parseInt(limit) || 10;
-  const players = await Player.find().limit(playersLimit);
-
-  io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, players);
+const getAllPlayers = (socketID) => {
+  Player.findAll()
+    .then((players) =>
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, players)
+    )
+    .catch((err) =>
+      io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+        error: err,
+      })
+    );
 };
 
 const addPlayer = (socketID, nickname) => {
