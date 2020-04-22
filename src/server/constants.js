@@ -17,6 +17,7 @@ const constants = {
     GET_ALL_PLAYERS: 'get_all_players',
     ADD_PLAYER: 'add_player',
     UPDATE_PLAYER: 'update_player',
+    UPDATE_HIGHSCORE: 'update_highscore',
     GET_PLAYER_WITH_NICKNAME: 'get_player_with_nickname',
     GET_PLAYER_WITH_ID: 'get_player_with_id',
     CHANGE_NICKNAME: 'change_nickname',

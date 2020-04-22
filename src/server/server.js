@@ -157,6 +157,7 @@ io.on('connection', (socket) => {
   socket.on(Constants.DATABASE_MSG_TYPES.GET_ALL_PLAYERS, getAllPlayers);
   socket.on(Constants.DATABASE_MSG_TYPES.ADD_PLAYER, addPlayer);
   socket.on(Constants.DATABASE_MSG_TYPES.UPDATE_PLAYER, updatePlayer);
+  socket.on(Constants.DATABASE_MSG_TYPES.UPDATE_HIGHSCORE, updateHighscore);
   socket.on(Constants.DATABASE_MSG_TYPES.CHANGE_NICKNAME, changeNickname);
   socket.on(Constants.DATABASE_MSG_TYPES.CHANGE_SKINTYPE, changeSkinType);
   socket.on(
@@ -455,6 +456,29 @@ const getPlayerWithID = (socketID, id) => {
         error: err,
       })
     );
+};
+
+const updateHighscore = (socketID, inputs) => {
+  const { id, nickname, spScore, mpScore } = inputs;
+
+  Player.findByIdAndUpdate(
+    id,
+    {
+      spScore,
+      mpScore,
+    },
+    { new: true },
+    (err, result) => {
+      if (err) {
+        io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
+          error: err,
+        });
+      } else {
+        io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, result);
+        console.log('Player score updated!');
+      }
+    }
+  );
 };
 
 // Old functions, currently not used
