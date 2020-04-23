@@ -76,7 +76,15 @@ io.on('connection', (socket) => {
   console.log('Player connected!', socket.id);
   // console.log(lobbies);
 
-  socket.emit('hello', `main lobby with socketID ${socket.id}`);
+  /* socket.on('pong', function (data) {
+    console.log('Pong received from client');
+  });
+  setTimeout(sendHeartbeat, 25000);
+
+  function sendHeartbeat() {
+    setTimeout(sendHeartbeat, 25000);
+    io.sockets.emit('ping', { beat: 1 });
+  } */
 
   /* socket.on(Constants.MSG_TYPES.JOIN_LOBBY, (data) => {
     const { socketid, room, nickname, playerId } = data;

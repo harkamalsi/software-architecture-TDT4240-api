@@ -17,7 +17,7 @@ class Lobby {
     this.specialPellets = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
-    setInterval(this.update.bind(this), 1000 / 10);
+    setInterval(this.update.bind(this), 1000 / 60);
   }
 
   getPlayersCount() {
