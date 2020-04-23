@@ -183,7 +183,7 @@ const getGameLobbies = (socketID) => {
 };
 
 const joinLobby = (socketID, inputs) => {
-  const { lobbyName, nickname, type } = inputs;
+  let { lobbyName, nickname, type } = inputs;
 
   let lobby = game.getLobby(lobbyName);
 
@@ -260,7 +260,6 @@ const createLobby = (socketID, inputs) => {
 
 const getLobby = (socketID) => {
   let lobby = game.getLobbyNameFromSocket(socketID);
-  console.log(lobby);
   io.to(socketID).emit(Constants.MSG_TYPES.GET_LOBBY, { lobby });
 };
 
