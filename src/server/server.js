@@ -262,9 +262,7 @@ const getLobby = (socketID) => {
 };
 
 const handleInput = (socketID, inputs) => {
-  const { lobbyName, directions } = inputs;
-
-  game.handleInput(socketID, lobbyName, directions);
+  game.handleInput(socketID, inputs);
 };
 
 const onDisconnectLobby = (socketID) => {

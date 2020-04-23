@@ -61,9 +61,8 @@ class Lobby {
     delete this.players[socketID];
   }
 
-  handleInput(socketID, inputs) {
-    const { lobbyName, directions } = inputs;
-    console.log(lobbyName, directions, socketID);
+  handleInput(socketID, directions) {
+    console.log({ socketID, directions });
     if (this.players[socketID]) {
       this.players[socketID].setDirection(directions);
     }

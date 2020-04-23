@@ -59,9 +59,8 @@ class Game {
   handleInput(socketID, inputs) {
     const { lobbyName, directions } = inputs;
 
-    console.log(lobbyName, directions, socketID);
+    let lobby = this.lobbies.filter((lobby) => lobby.name == lobbyName)[0];
 
-    let lobby = this.getLobby(lobbyName);
     if (lobby) {
       lobby.handleInput(socketID, directions);
     }
