@@ -6,6 +6,9 @@ class Game {
     this.lobbies = [];
     this.io = io;
     this.counter = this.lobbies.length + 1;
+    /* this.lastUpdateTime = Date.now();
+    this.shouldSendUpdate = false;
+    setInterval(this.update.bind(this), 1000 / 10); */
   }
 
   getLobbiesCounter() {
@@ -25,7 +28,10 @@ class Game {
   }
 
   getLobbyNameFromSocket(socketID) {
-    return this.lobbies.find((lobby) => lobby.playerExists(socketID)).name;
+    let lobby = this.lobbies.find((lobby) => lobby.playerExists(socketID));
+    if (lobby) {
+      return lobby.name;
+    }
   }
 
   addLobby(lobbyName) {
@@ -40,6 +46,7 @@ class Game {
     let lobby = this.getLobby(lobbyName);
     if (lobby) {
       lobby.addPlayer(socketID, nickname, type);
+      console.log('Player added');
     }
   }
 
@@ -47,7 +54,13 @@ class Game {
     this.getLobby(lobbyName).removePlayer(socketID);
   }
 
-  handleInput(socketID, lobbyName, directions) {
+  updateDirections(socketID, lobbyName, directions) {}
+
+  handleInput(socketID, inputs) {
+    const { lobbyName, directions } = inputs;
+
+    console.log(lobbyName, directions, socketID);
+
     let lobby = this.getLobby(lobbyName);
     if (lobby) {
       lobby.handleInput(socketID, directions);

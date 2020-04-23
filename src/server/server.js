@@ -153,7 +153,7 @@ io.on('connection', (socket) => {
   socket.on(Constants.MSG_TYPES.GET_LOBBY, getLobby);
   socket.on(Constants.MSG_TYPES.LEAVE_LOBBY, leaveLobby);
   socket.on(Constants.MSG_TYPES.CREATE_LOBBY, createLobby);
-  //socket.on(Constants.MSG_TYPES.INPUT, handleInput);
+  socket.on(Constants.MSG_TYPES.INPUT, handleInput);
 
   socket.on(Constants.DATABASE_MSG_TYPES.GET_ALL_PLAYERS, getAllPlayers);
   socket.on(Constants.DATABASE_MSG_TYPES.ADD_PLAYER, addPlayer);
@@ -231,10 +231,9 @@ const createLobby = (socketID, inputs) => {
 
   // Lobbies will start from lobby1
   let lobbyName = 'Lobby' + lobbyCounter;
-
   let lobbyExists = game.getLobby(lobbyName);
 
-  while (lobbyExists) {
+  while (lobbyExists != undefined) {
     lobbyCounter++;
     lobbyName = 'Lobby' + lobbyCounter;
     lobbyExists = game.getLobby(lobbyName);
@@ -254,20 +253,16 @@ const createLobby = (socketID, inputs) => {
   ) {
     game.addLobby(lobbyName);
     joinLobby(socketID, { lobbyName, nickname, type });
-    console.log({ lobbyName });
   }
 };
 
 const getLobby = (socketID) => {
   let lobby = game.getLobbyNameFromSocket(socketID);
-  console.log({ lobby, socketID });
   io.to(socketID).emit(Constants.MSG_TYPES.GET_LOBBY, { lobby });
 };
 
 const handleInput = (socketID, inputs) => {
   const { lobbyName, directions } = inputs;
-
-  console.log(lobbyName, directions, socketID);
 
   game.handleInput(socketID, lobbyName, directions);
 };

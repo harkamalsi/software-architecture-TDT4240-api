@@ -142,7 +142,7 @@ class Lobby {
         const socket = this.sockets[playerID];
         const player = this.players[playerID];
 
-        this.io.on(Constants.MSG_TYPES.INPUT, this.handleInput);
+        //this.io.on(Constants.MSG_TYPES.INPUT, this.handleInput);
 
         this.io.to(socket).emit(
           // TODO: add Constants.MSG_TYPES.GAME_UPDATE
