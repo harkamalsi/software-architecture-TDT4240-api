@@ -6,7 +6,7 @@ class Player {
     this.nickname = nickname;
     this.x = x;
     this.y = y;
-    this.direction = [];
+    this.directions = [];
     this.type = type;
 
     if (type == 'ghost') {
@@ -41,17 +41,18 @@ class Player {
     this.hp -= Constants.GHOST_DAMAGE;
   }
 
-  setDirection(direction) {
-    this.direction = direction;
+  setDirection(directions) {
+    this.directions = directions;
   }
 
   serializeForUpdate() {
     return {
       id: this.id,
       nickname: this.nickname,
+      type: this.type,
       /*       x: this.x,
       y: this.y, */
-      directions: this.direction,
+      directions: this.directions,
       //hp: this.hp,
     };
   }

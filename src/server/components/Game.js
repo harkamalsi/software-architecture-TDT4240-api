@@ -47,10 +47,10 @@ class Game {
     this.getLobby(lobbyName).removePlayer(socketID);
   }
 
-  handleInput(socketID, lobbyName, direction) {
+  handleInput(socketID, lobbyName, directions) {
     let lobby = this.getLobby(lobbyName);
     if (lobby) {
-      lobby.handleInput(socketID, direction);
+      lobby.handleInput(socketID, directions);
     }
   }
 }

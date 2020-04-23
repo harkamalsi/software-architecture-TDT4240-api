@@ -24,8 +24,18 @@ class Lobby {
     return Object.keys(this.sockets).length;
   }
 
+  getGhostsCount() {
+    return Object.values(this.players).filter(
+      (player) => player.type != 'PACMAN'
+    ).length;
+  }
+
   playerExists(socketID) {
     return Object.keys(this.sockets).includes(socketID);
+  }
+
+  playerTypeExists(type) {
+    return Object.values(this.players).some((player) => player.type == type);
   }
 
   addPlayer(socketID, nickname, type) {
@@ -51,9 +61,9 @@ class Lobby {
     delete this.players[socketID];
   }
 
-  handleInput(socketID, direction) {
+  handleInput(socketID, directions) {
     if (this.players[socketID]) {
-      this.players[socketID].setDirection(direction);
+      this.players[socketID].setDirection(directions);
     }
   }
 
@@ -207,12 +217,12 @@ class Lobby {
       t: Date.now(),
       me: player.serializeForUpdate(),
       others: allOtherPlayers.map((p) => p.serializeForUpdate()),
-      normalPellets: this.normalPellets.map((pellet) =>
+      /* normalPellets: this.normalPellets.map((pellet) =>
         pellet.serializeForUpdate()
       ),
       specialPellets: this.specialPellets.map((pellet) =>
         pellet.serializeForUpdate()
-      ),
+      ), */
       scoreboard,
     };
   }

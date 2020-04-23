@@ -198,9 +198,21 @@ const joinLobby = (socketID, inputs) => {
   }
 
   if (lobby) {
+    let playerTypeExists = lobby.playerTypeExists(type);
+    if (type != 'PACMAN') {
+      let ghostNumber = lobby.getGhostsCount();
+      if (ghostNumber < 4) {
+        type = 'GHOST_NUMBER_' + ghostNumber;
+        playerTypeExists = false;
+      } else {
+        playerTypeExists = true;
+      }
+    }
+
     if (
       lobby.getPlayersCount() < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY &&
-      socketInsideAnotherLobbyExists == undefined
+      socketInsideAnotherLobbyExists == undefined &&
+      !playerTypeExists
     ) {
       game.addPlayerToLobby(socketID, lobbyName, nickname, type);
     } else {
@@ -253,8 +265,8 @@ const getLobby = (socketID) => {
 };
 
 const handleInput = (socketID, inputs) => {
-  const { lobbyName, direction } = inputs;
-  game.handleInput(socketID, lobbyName, direction);
+  const { lobbyName, directions } = inputs;
+  game.handleInput(socketID, lobbyName, directions);
 };
 
 const onDisconnectLobby = (socketID) => {
