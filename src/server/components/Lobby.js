@@ -17,7 +17,7 @@ class Lobby {
     this.specialPellets = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
-    setInterval(this.update.bind(this), 1000 / 60);
+    setInterval(this.update.bind(this), 1000 / 10);
   }
 
   getPlayersCount() {
@@ -61,7 +61,9 @@ class Lobby {
     delete this.players[socketID];
   }
 
-  handleInput(socketID, directions) {
+  handleInput(socketID, inputs) {
+    const { lobbyName, directions } = inputs;
+    console.log(lobbyName, directions, socketID);
     if (this.players[socketID]) {
       this.players[socketID].setDirection(directions);
     }
@@ -139,6 +141,8 @@ class Lobby {
       Object.keys(this.sockets).forEach((playerID) => {
         const socket = this.sockets[playerID];
         const player = this.players[playerID];
+
+        this.io.on(Constants.MSG_TYPES.INPUT, this.handleInput);
 
         this.io.to(socket).emit(
           // TODO: add Constants.MSG_TYPES.GAME_UPDATE
