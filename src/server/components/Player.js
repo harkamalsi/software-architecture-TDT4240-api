@@ -47,7 +47,7 @@ class Player {
 
   serializeForUpdate() {
     return {
-      id: this.id,
+      //id: this.id,
       nickname: this.nickname,
       type: this.type,
       x: this.x,
