@@ -17,7 +17,7 @@ class Lobby {
     this.specialPellets = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
-    setInterval(this.update.bind(this), 1000 / 120);
+    setInterval(this.update.bind(this), 1000 / 180);
   }
 
   getPlayersCount() {
@@ -51,7 +51,6 @@ class Lobby {
   }
 
   handleInput(socketID, x, y) {
-    console.log({ socketID, x, y });
     if (this.players[socketID]) {
       this.players[socketID].setDirection(x, y);
     }
