@@ -143,7 +143,7 @@ class Lobby {
 
         //this.io.on(Constants.MSG_TYPES.INPUT, this.handleInput);
 
-        this.io.on(Constants.MSG_TYPES.GET_LOBBY, getLobby);
+        this.io.on(Constants.MSG_TYPES.GET_LOBBY, this.getLobby);
 
         this.io.to(socket).emit(
           // TODO: add Constants.MSG_TYPES.GAME_UPDATE
