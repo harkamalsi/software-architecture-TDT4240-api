@@ -143,6 +143,8 @@ class Lobby {
 
         //this.io.on(Constants.MSG_TYPES.INPUT, this.handleInput);
 
+        this.io.on(Constants.MSG_TYPES.GET_LOBBY, getLobby);
+
         this.io.to(socket).emit(
           // TODO: add Constants.MSG_TYPES.GAME_UPDATE
           Constants.MSG_TYPES.GAME_UPDATE + `_${this.name}`,
@@ -152,6 +154,15 @@ class Lobby {
       this.shouldSendUpdate = false;
     } else {
       this.shouldSendUpdate = true;
+    }
+  }
+
+  getLobby(socketID) {
+    let playerExits = this.playerExists(socketID);
+    let lobby = this.name;
+    if (playerExits) {
+      console.log(lobby);
+      io.to(socketID).emit(Constants.MSG_TYPES.GET_LOBBY, { lobby });
     }
   }
 
