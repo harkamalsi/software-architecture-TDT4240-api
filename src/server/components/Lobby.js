@@ -41,19 +41,8 @@ class Lobby {
   addPlayer(socketID, nickname, type) {
     this.sockets[socketID] = socketID;
 
-    const positions = {
-      x: this.generateRandomStartingPosition(),
-      y: this.generateRandomStartingPosition(),
-    };
-
-    this.players[socketID] = new Player(
-      socketID,
-      nickname,
-      positions.x,
-      positions.y,
-      type
-    );
-    this.io.to(socketID).emit(Constants.MSG_TYPES.PLAYER_JOINED_JOINED);
+    this.players[socketID] = new Player(socketID, nickname, type);
+    //this.io.to(socketID).emit(Constants.MSG_TYPES.PLAYER_JOINED_JOINED);
   }
 
   removePlayer(socketID) {
@@ -61,10 +50,10 @@ class Lobby {
     delete this.players[socketID];
   }
 
-  handleInput(socketID, directions) {
-    console.log({ socketID, directions });
+  handleInput(socketID, x, y) {
+    console.log({ socketID, x, y });
     if (this.players[socketID]) {
-      this.players[socketID].setDirection(directions);
+      this.players[socketID].setDirection(x, y);
     }
   }
 
@@ -228,7 +217,7 @@ class Lobby {
     );
 
     return {
-      t: Date.now(),
+      //t: Date.now(),
       me: player.serializeForUpdate(),
       others: allOtherPlayers.map((p) => p.serializeForUpdate()),
       /* normalPellets: this.normalPellets.map((pellet) =>

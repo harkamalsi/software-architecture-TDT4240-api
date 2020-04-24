@@ -1,12 +1,11 @@
 const Constants = require('../constants');
 
 class Player {
-  constructor(id, nickname, x, y, type) {
+  constructor(id, nickname, type) {
     this.id = id;
     this.nickname = nickname;
-    this.x = x;
-    this.y = y;
-    this.directions = [];
+    this.x = 10;
+    this.y = 10;
     this.type = type;
 
     if (type == 'ghost') {
@@ -41,8 +40,9 @@ class Player {
     this.hp -= Constants.GHOST_DAMAGE;
   }
 
-  setDirection(directions) {
-    this.directions = directions;
+  setDirection(x, y) {
+    this.x = x;
+    this.y = y;
   }
 
   serializeForUpdate() {
@@ -50,9 +50,9 @@ class Player {
       id: this.id,
       nickname: this.nickname,
       type: this.type,
-      /*       x: this.x,
-      y: this.y, */
-      directions: this.directions,
+      x: this.x,
+      y: this.y,
+      //directions: this.directions,
       //hp: this.hp,
     };
   }

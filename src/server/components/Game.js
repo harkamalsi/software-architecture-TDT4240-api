@@ -57,12 +57,12 @@ class Game {
   updateDirections(socketID, lobbyName, directions) {}
 
   handleInput(socketID, inputs) {
-    const { lobbyName, directions } = inputs;
+    const { lobbyName, x, y } = inputs;
 
     let lobby = this.lobbies.filter((lobby) => lobby.name == lobbyName)[0];
 
     if (lobby) {
-      lobby.handleInput(socketID, directions);
+      lobby.handleInput(socketID, x, y);
     }
   }
 }
