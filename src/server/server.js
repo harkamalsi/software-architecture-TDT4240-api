@@ -158,7 +158,7 @@ io.on('connection', (socket) => {
 
   socket.on(Constants.MSG_TYPES.GET_GAME_LOBBIES, getGameLobbies);
   socket.on(Constants.MSG_TYPES.JOIN_LOBBY, joinLobby);
-  //socket.on(Constants.MSG_TYPES.GET_LOBBY, getLobby);
+  socket.on(Constants.MSG_TYPES.GET_LOBBY, getLobby);
   socket.on(Constants.MSG_TYPES.LEAVE_LOBBY, leaveLobby);
   socket.on(Constants.MSG_TYPES.CREATE_LOBBY, createLobby);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
@@ -260,7 +260,7 @@ const createLobby = (socketID, inputs) => {
     socketInsideAnotherLobbyExists == undefined
   ) {
     game.addLobby(lobbyName);
-    joinLobby(socketID, { lobbyName, nickname, type });
+    //joinLobby(socketID, { lobbyName, nickname, type });
   }
 };
 
