@@ -47,7 +47,10 @@ class Game {
   }
 
   removePlayerFromLobby(socketID, lobbyName) {
-    this.getLobby(lobbyName).removePlayer(socketID);
+    let lobby = this.getLobby(lobbyName);
+    if (lobby) {
+      lobby.removePlayer(socketID);
+    }
   }
 
   handleInput(socketID, inputs) {
