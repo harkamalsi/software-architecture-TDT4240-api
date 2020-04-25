@@ -17,6 +17,7 @@ class Lobby {
   }
 
   getPlayersCount() {
+    //console.log(Object.keys(this.sockets).length);
     return Object.keys(this.sockets).length;
   }
 

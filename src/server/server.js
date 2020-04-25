@@ -174,13 +174,15 @@ const createLobby = (socketID, inputs) => {
     socketInsideAnotherLobbyExists == undefined
   ) {
     game.addLobby(lobbyName, socketID);
-    //joinLobby(socketID, { lobbyName, nickname, type });
+    joinLobby(socketID, { lobbyName, nickname, type });
   }
 };
 
 const getLobby = (socketID) => {
   let lobby = game.getLobbyNameFromSocket(socketID);
-  io.to(socketID).emit(Constants.MSG_TYPES.GET_LOBBY, { lobby });
+  if (lobby) {
+    io.to(socketID).emit(Constants.MSG_TYPES.GET_LOBBY, { lobby });
+  }
 };
 
 const handleInput = (socketID, inputs) => {
