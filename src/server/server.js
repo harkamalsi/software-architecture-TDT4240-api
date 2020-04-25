@@ -229,6 +229,10 @@ const joinLobby = (socketID, inputs) => {
   }
 };
 
+const handleReadyUp = (socketId, isReady) => {
+  let lobby = game;
+};
+
 const leaveLobby = (socketID, lobbyName) => {
   game.removePlayerFromLobby(socketID, lobbyName);
 };
