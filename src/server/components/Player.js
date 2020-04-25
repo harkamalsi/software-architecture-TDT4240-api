@@ -4,8 +4,8 @@ class Player {
   constructor(id, nickname, type) {
     this.id = id;
     this.nickname = nickname;
-    this.x = 10;
-    this.y = 10;
+    this.x;
+    this.y;
     this.type = type;
 
     if (type == 'ghost') {
