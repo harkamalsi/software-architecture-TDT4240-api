@@ -3,9 +3,10 @@ const Player = require('./Player');
 const applyCollisions = require('./Collisions');
 
 class Lobby {
-  constructor(io, name) {
+  constructor(io, name, socketMadeLobby) {
     this.io = io;
     this.name = name;
+    this.socketMadeLobby = socketMadeLobby;
     this.sockets = {};
     // players have playerID and type (pacman or ghost). Object of objects.
     this.players = {};
@@ -73,10 +74,10 @@ class Lobby {
   }
 
   update() {
-    let startGame = this.allPlayersReadyUp();
+    this.startGame = this.allPlayersReadyUp();
 
     // Send a game update to each player every other time
-    if (this.shouldSendUpdate && startGame) {
+    if (this.shouldSendUpdate && this.startGame) {
       // scoreboard is the "local" scoreboard for a lobby; not global highscoreboard
       const scoreboard = this.getScoreboard();
       Object.keys(this.sockets).forEach((playerID) => {

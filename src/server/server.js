@@ -93,7 +93,10 @@ const game = new Game(io);
 
 const handleReadyUpPlayer = (socketId, lobbyName, isReadyUp) => {
   let lobby = game.getLobby(lobbyName);
-  lobby.handleReadyUpPlayer(socketId, isReadyUp);
+
+  if (lobby) {
+    lobby.handleReadyUpPlayer(socketId, isReadyUp);
+  }
 };
 
 const getGameLobbies = (socketID) => {
@@ -170,14 +173,13 @@ const createLobby = (socketID, inputs) => {
     game.getLobbiesCounter() < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY &&
     socketInsideAnotherLobbyExists == undefined
   ) {
-    game.addLobby(lobbyName);
+    game.addLobby(lobbyName, socketID);
     //joinLobby(socketID, { lobbyName, nickname, type });
   }
 };
 
 const getLobby = (socketID) => {
   let lobby = game.getLobbyNameFromSocket(socketID);
-  console.log(lobby);
   io.to(socketID).emit(Constants.MSG_TYPES.GET_LOBBY, { lobby });
 };
 
@@ -186,6 +188,13 @@ const handleInput = (socketID, inputs) => {
 };
 
 const onDisconnectLobby = (socketID) => {
+  /* let deleteLobby = game.lobbies.find(
+    (lobby) => lobby.socketMadeLobby == socketID
+  );
+  if (deleteLobby) {
+    game.removeLobby(deleteLobby.name);
+  } */
+
   let lobby = game.lobbies.find((lobby) => {
     return lobby.playerExists(socketID);
   });

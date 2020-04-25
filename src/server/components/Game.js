@@ -31,8 +31,8 @@ class Game {
     }
   }
 
-  addLobby(lobbyName) {
-    this.lobbies.push(new Lobby(this.io, lobbyName));
+  addLobby(lobbyName, socketMadeLobby) {
+    this.lobbies.push(new Lobby(this.io, lobbyName, socketMadeLobby));
   }
 
   removeLobby(lobbyName) {
@@ -43,7 +43,6 @@ class Game {
     let lobby = this.getLobby(lobbyName);
     if (lobby) {
       lobby.addPlayer(socketID, nickname, type);
-      console.log('Player added');
     }
   }
 
