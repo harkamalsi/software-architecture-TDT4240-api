@@ -10,6 +10,7 @@ const constants = {
     RESPAWN_PELLETS: 'respawn_pellets',
     GAME_UPDATE: 'game_update',
     INPUT: 'input',
+    READY_UP: 'ready_up',
     GAME_OVER_PACMAN: 'pacman_lost',
     GAME_OVER_GHOSTS: 'ghosts_lost',
     DATABASE_UPDATE: 'database_update',

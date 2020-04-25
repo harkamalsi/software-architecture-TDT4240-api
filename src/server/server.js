@@ -1,5 +1,5 @@
 const express = require('express');
-const path = require('path');
+//const path = require('path');
 const http = require('http');
 const socketio = require('socket.io');
 const cors = require('cors');
@@ -17,7 +17,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'socket-io-client/build')));
+//app.use(express.static(path.join(__dirname, 'socket-io-client/build')));
 
 // Middleware (cors)
 app.use(cors());
@@ -49,112 +49,19 @@ app.use('/game', gameRouter);
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-app.get('*', (req, res) => {
+/* app.get('*', (req, res) => {
   // console.log(path.join(__dirname, '..', '/socket-io-client/build/index.html'));
   res.sendFile(
     path.join(__dirname, '..', '/socket-io-client/build/index.html')
   );
-});
+}); */
 
 // Setup socket.io
 const io = socketio(server);
 
-// array of objects (dicts) for lobbies and clients inside them with their socketids and playerids
-// each key is a new lobby&clients item
-let lobby_counter = 1;
-let lobbies = [];
-
-let total_clients = 0;
-
-let room;
-let clientId;
-let socketId;
-
 // Listen for socket.io connections for
 io.on('connection', (socket) => {
-  // socketId = socket.id;
   console.log('Player connected!', socket.id);
-  // console.log(lobbies);
-
-  /* socket.on('pong', function (data) {
-    console.log('Pong received from client');
-  });
-  setTimeout(sendHeartbeat, 25000);
-
-  function sendHeartbeat() {
-    setTimeout(sendHeartbeat, 25000);
-    io.sockets.emit('ping', { beat: 1 });
-  } */
-
-  /* socket.on(Constants.MSG_TYPES.JOIN_LOBBY, (data) => {
-    const { socketid, room, nickname, playerId } = data;
-    clientId = playerId;
-    socketId = socketid;
-
-    if (
-      getClientsInRoom('lobby1') < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY
-    ) {
-      socket.join(room, () => {
-        updateLobbies(room, socketId, clientId);
-      });
-
-      socket.emit('update', {
-        room,
-        message: `${room} with socketID ${socket.id}`,
-      });
-    } else {
-      console.log(`${room} is full!`);
-      io.to(socketId).emit('update', {
-        room,
-        message: '',
-        error: `${room} is full!`,
-      });
-    }
-  }); */
-
-  /* socket.on(Constants.MSG_TYPES.CREATE_LOBBY, (data) => {
-    const { socketid, nickname, playerId } = data;
-    clientId = playerId;
-    socketId = socketid;
-
-    room = `lobby${lobby_counter}`;
-
-    socket.join(room, () => {
-      updateLobbies(room, socketId, playerId);
-      lobby_counter++;
-    });
-
-    socket.emit('update', {
-      room,
-      message: `${room} with socketID ${socketId}`,
-    });
-  }); */
-
-  /* socket.on('disconnect', () => {
-    // Finding the room player disconnected from
-    let updateRoom;
-    console.log('before updating', socketId, clientId, true);
-    if (lobbies.length > 0) {
-      lobbyItem = lobbies.find((lobbyItem) =>
-        lobbyItem.sockets.includes(socketId)
-      );
-
-      if (lobbyItem) updateRoom = lobbyItem.room;
-
-      console.log('');
-      console.log('******Updating already existing lobby on disconnect******');
-      console.log('');
-
-      console.log({ oldSockets: lobbies[0].sockets });
-      console.log(updateRoom, socketId, clientId, true);
-      updateLobbies(updateRoom, socketId, clientId, true);
-    } else {
-      console.log('');
-      console.log('******Disconnected without udpdating lobbies******');
-      console.log('');
-    }
-    console.log({ newSockets: lobbies[0].sockets });
-  }); */
 
   socket.on(Constants.MSG_TYPES.GET_GAME_LOBBIES, getGameLobbies);
   socket.on(Constants.MSG_TYPES.JOIN_LOBBY, joinLobby);
@@ -162,6 +69,7 @@ io.on('connection', (socket) => {
   socket.on(Constants.MSG_TYPES.LEAVE_LOBBY, leaveLobby);
   socket.on(Constants.MSG_TYPES.CREATE_LOBBY, createLobby);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
+  socket.on(Constants.MSG_TYPES.READY_UP, handleReadyUpPlayer);
 
   socket.on(Constants.DATABASE_MSG_TYPES.GET_ALL_PLAYERS, getAllPlayers);
   socket.on(Constants.DATABASE_MSG_TYPES.ADD_PLAYER, addPlayer);
@@ -182,8 +90,11 @@ io.on('connection', (socket) => {
 
 // Using game singleton object
 const game = new Game(io);
-//game.addLobby('lobby0');
-//game.addLobby('lobby1');
+
+const handleReadyUpPlayer = (socketId, lobbyName, isReadyUp) => {
+  let lobby = game.getLobby(lobbyName);
+  lobby.handleReadyUpPlayer(socketId, isReadyUp);
+};
 
 const getGameLobbies = (socketID) => {
   let lobbies = game.getLobbies();
@@ -510,117 +421,6 @@ const updateHighscore = (socketID, inputs) => {
       console.log('Player score updated!');
     }
   });
-};
-
-// Old functions, currently not used
-
-const updateLobbies = (
-  room,
-  socketId,
-  clientId,
-  playerDisconnected = false
-) => {
-  if (playerDisconnected || room == undefined) {
-    roomClientsNumber = getClientsInRoom(room);
-
-    if (roomClientsNumber == 0 && lobby_counter >= 1) {
-      // finds if lobby exists before
-      const lobbyIndex = lobbies.findIndex(
-        (lobbyItem) => lobbyItem.room == room
-      );
-
-      if (lobbyIndex > -1) {
-        lobbies.splice(lobbyIndex, 1);
-        lobby_counter--;
-      }
-    } else {
-      // roomClientsNumber > 0
-      const lobbyIndex = lobbies.findIndex(
-        (lobbyItem) => lobbyItem.room == room
-      );
-
-      if (lobbyIndex > -1) {
-        lobbyItem = lobbies[lobbyIndex];
-
-        newSockets = lobbyItem.sockets.filter(
-          (socketItem) => socketItem != socketId
-        );
-        newPlayerIds = lobbyItem.playerIds.filter(
-          (playerIdItem) => playerIdItem != clientId
-        );
-
-        let newLobbyItem = {
-          room,
-          sockets: newSockets,
-          playerIds: newPlayerIds,
-        };
-
-        lobbies[lobbyIndex] = newLobbyItem;
-
-        // lobbyItem.sockets.splice(socketIndex, 1);
-        // lobbyItem.playerIds.splice(playerIndex, 1);
-
-        if (getClientsInRoom(room) == 0 && lobby_counter >= 1) {
-          // TODO: rightly decrement lobby_counter
-          // lobby_counter--; Not decremening lobby_counter.
-          // For now only for last lobby deleted => decrement lobby_counter
-          console.log(
-            'lobby_counter',
-            lobby_counter,
-            'not correctly decremented.'
-          );
-        }
-      }
-    }
-  } else {
-    // finds if lobby exists before
-    const lobbyIndex = lobbies.findIndex((element) => element.room == room);
-
-    let socketAlreadyJoined = false;
-
-    // checks only if socket is in this lobby (clients only join one lobby at a time)
-    if (lobbyIndex != -1) {
-      socketAlreadyJoined = lobbies[lobbyIndex].sockets.includes(socketId);
-    }
-
-    //lobbies.findIndex(element =>
-    //  element.sockets.includes(socketID)
-
-    if (lobbyIndex != -1 && !socketAlreadyJoined) {
-      lobbyItem = lobbies[lobbyIndex];
-
-      let newLobbyItem = {
-        room,
-        sockets: [...lobbyItem.sockets, socketId],
-        playerIds: [...lobbyItem.playerIds, clientId],
-      };
-
-      lobbies[lobbyIndex] = newLobbyItem;
-    } else if (lobbyIndex == -1) {
-      lobbies.push({
-        room,
-        sockets: [socketId],
-        playerIds: [clientId],
-      });
-    }
-  }
-};
-
-const getTotalClients = () => {
-  total_clients = Object.keys(io.of('/').sockets).length;
-
-  lobby1_clients = getClientsInRoom('lobby1');
-
-  return { total_clients, lobby1_clients };
-};
-
-const getClientsInRoom = (room) => {
-  const clients = io.sockets.adapter.rooms[room];
-
-  if (clients) {
-    return clients.length;
-  }
-  return 0;
 };
 
 // Starts the server

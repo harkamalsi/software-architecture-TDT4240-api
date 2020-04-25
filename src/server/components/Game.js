@@ -6,9 +6,6 @@ class Game {
     this.lobbies = [];
     this.io = io;
     this.counter = this.lobbies.length + 1;
-    /* this.lastUpdateTime = Date.now();
-    this.shouldSendUpdate = false;
-    setInterval(this.update.bind(this), 1000 / 10); */
   }
 
   getLobbiesCounter() {
@@ -53,8 +50,6 @@ class Game {
   removePlayerFromLobby(socketID, lobbyName) {
     this.getLobby(lobbyName).removePlayer(socketID);
   }
-
-  updateDirections(socketID, lobbyName, directions) {}
 
   handleInput(socketID, inputs) {
     const { lobbyName, x, y } = inputs;
