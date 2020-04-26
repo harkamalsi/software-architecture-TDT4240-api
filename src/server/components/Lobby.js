@@ -45,10 +45,10 @@ class Lobby {
     delete this.players[socketID];
   }
 
-  handleInput(socketID, x, y) {
+  handleInput(socketId, x, y) {
     let player = this.players[socketId];
     if (player) {
-      this.players[socketID].setDirection(x, y);
+      player.setDirection(x, y);
     }
   }
 
