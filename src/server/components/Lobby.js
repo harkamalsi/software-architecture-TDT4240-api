@@ -53,7 +53,10 @@ class Lobby {
   }
 
   handleReadyUpPlayer(socketId, isReadyUp) {
-    this.players[socketId].setReadyUp(isReadyUp);
+    let player = this.players[socketId];
+    if (player) {
+      player.setReadyUp(isReadyUp);
+    }
   }
 
   isSomePlayerReadyUp() {
@@ -75,7 +78,7 @@ class Lobby {
   }
 
   update() {
-    this.startGame = this.allPlayersReadyUp();
+    this.startGame = this.isSomePlayerReadyUp();
 
     // Send a game update to each player every other time
     if (this.shouldSendUpdate && this.startGame) {

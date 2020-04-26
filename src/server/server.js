@@ -174,7 +174,7 @@ const createLobby = (socketID, inputs) => {
     socketInsideAnotherLobbyExists == undefined
   ) {
     game.addLobby(lobbyName, socketID);
-    joinLobby(socketID, { lobbyName, nickname, type });
+    //joinLobby(socketID, { lobbyName, nickname, type });
   }
 };
 
@@ -249,15 +249,16 @@ const addPlayer = (socketID, nickname) => {
     } else {
       newPlayer
         .save()
-        .then((player) =>
-          io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, player)
-        )
+        .then((player) => {
+          console.log(player);
+          io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, player);
+        })
         .then(console.log('Player added!'))
-        .catch((err) =>
+        .catch((err) => {
           io.to(socketID).emit(Constants.MSG_TYPES.DATABASE_UPDATE, {
             error: err,
-          })
-        );
+          });
+        });
     }
   });
 };
