@@ -78,7 +78,7 @@ class Lobby {
   }
 
   update() {
-    this.startGame = this.isSomePlayerReadyUp();
+    this.startGame = this.allPlayersReadyUp();
 
     // Send a game update to each player every other time
     if (this.shouldSendUpdate && this.startGame) {

@@ -101,6 +101,7 @@ const handleReadyUpPlayer = (socketId, lobbyName, isReadyUp) => {
 
 const getGameLobbies = (socketID) => {
   let lobbies = game.getLobbies();
+  //console.log(lobbies);
   io.to(socketID).emit(Constants.MSG_TYPES.GET_GAME_LOBBIES, lobbies);
 };
 
@@ -144,6 +145,7 @@ const joinLobby = (socketID, inputs) => {
 };
 
 const leaveLobby = (socketID, lobbyName) => {
+  console.log('Leave lobby called', socketID, lobbyName);
   game.removePlayerFromLobby(socketID, lobbyName);
 };
 
@@ -181,6 +183,7 @@ const createLobby = (socketID, inputs) => {
 const getLobby = (socketID) => {
   let lobby = game.getLobbyNameFromSocket(socketID);
   if (lobby) {
+    //console.log('Get lobby called', lobby);
     io.to(socketID).emit(Constants.MSG_TYPES.GET_LOBBY, { lobby });
   }
 };
