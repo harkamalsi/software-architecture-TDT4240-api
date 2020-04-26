@@ -71,6 +71,7 @@ class Lobby {
       return false;
     } else {
       let playersReadyUp = players.filter((player) => {
+        console.log(player);
         player.isReadyUp == false;
       });
       console.log(playersReadyUp);
@@ -81,7 +82,7 @@ class Lobby {
   update() {
     this.startGame = this.allPlayersReadyUp();
 
-    console.log('From lobby', this.startGame);
+    //console.log('From lobby', this.startGame);
 
     // Send a game update to each player every other time
     if (this.shouldSendUpdate && this.startGame) {
