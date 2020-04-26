@@ -13,7 +13,7 @@ class Lobby {
     this.shouldSendUpdate = false;
     setInterval(this.update.bind(this), 1000 / 60);
 
-    let startGame = false;
+    this.startGame = false;
   }
 
   getPlayersCount() {
@@ -78,7 +78,9 @@ class Lobby {
   }
 
   update() {
-    this.startGame = this.allPlayersReadyUp();
+    if (!this.startGame) {
+      this.startGame = this.allPlayersReadyUp();
+    }
 
     // Send a game update to each player every other time
     if (this.shouldSendUpdate && this.startGame) {

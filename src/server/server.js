@@ -101,7 +101,6 @@ const handleReadyUpPlayer = (socketId, lobbyName, isReadyUp) => {
 
 const getGameLobbies = (socketID) => {
   let lobbies = game.getLobbies();
-  //console.log(lobbies);
   io.to(socketID).emit(Constants.MSG_TYPES.GET_GAME_LOBBIES, lobbies);
 };
 
@@ -193,17 +192,11 @@ const getLobby = (socketID) => {
 };
 
 const handleInput = (socketID, inputs) => {
+  //console.log('handleInput', 'called');
   game.handleInput(socketID, inputs);
 };
 
 const onDisconnectLobby = (socketID) => {
-  /* let deleteLobby = game.lobbies.find(
-    (lobby) => lobby.socketMadeLobby == socketID
-  );
-  if (deleteLobby) {
-    game.removeLobby(deleteLobby.name);
-  } */
-
   let lobby = game.lobbies.find((lobby) => {
     return lobby.playerExists(socketID);
   });
@@ -213,13 +206,13 @@ const onDisconnectLobby = (socketID) => {
     game.removePlayerFromLobby(socketID, lobby);
   }
 
-  /* if (lobby) {
+  if (lobby) {
     game.removePlayerFromLobby(socketID, lobby);
 
     if (game.getLobby(lobby).getPlayersCount() == 0) {
       game.removeLobby(lobby);
     }
-  } */
+  }
 
   console.log('lobbies found after a player disconneted:');
   console.log(game.getLobbies());
