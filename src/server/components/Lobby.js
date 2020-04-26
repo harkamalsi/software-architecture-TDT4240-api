@@ -71,7 +71,7 @@ class Lobby {
       return false;
     } else {
       let playersReadyUp = players.filter((player) => {
-        player.isReadyUp == false;
+        player.isReadyUp == true;
       });
       return playersReadyUp.length == 0 ? true : false;
     }
