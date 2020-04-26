@@ -71,18 +71,14 @@ class Lobby {
       return false;
     } else {
       let playersReadyUp = players.filter((player) => {
-        console.log(player.isReadyUp, typeof isReadyUp);
-        player.isReadyUp == false;
+        return player.isReadyUp == false;
       });
-      console.log(playersReadyUp);
       return playersReadyUp.length == 0 ? true : false;
     }
   }
 
   update() {
     this.startGame = this.allPlayersReadyUp();
-
-    //console.log('From lobby', this.startGame);
 
     // Send a game update to each player every other time
     if (this.shouldSendUpdate && this.startGame) {
