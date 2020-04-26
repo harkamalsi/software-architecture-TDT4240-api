@@ -209,15 +209,16 @@ const onDisconnectLobby = (socketID) => {
 
   if (lobby) {
     lobby = lobby.name;
+    game.removePlayerFromLobby(socketID, lobby);
   }
 
-  if (lobby) {
+  /* if (lobby) {
     game.removePlayerFromLobby(socketID, lobby);
 
     if (game.getLobby(lobby).getPlayersCount() == 0) {
       game.removeLobby(lobby);
     }
-  }
+  } */
 
   console.log('lobbies found after a player disconneted:');
   console.log(game.getLobbies());
