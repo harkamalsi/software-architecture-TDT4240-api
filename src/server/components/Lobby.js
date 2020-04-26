@@ -80,6 +80,8 @@ class Lobby {
   update() {
     this.startGame = this.allPlayersReadyUp();
 
+    console.log('From lobby', this.startGame);
+
     // Send a game update to each player every other time
     if (this.shouldSendUpdate && this.startGame) {
       // scoreboard is the "local" scoreboard for a lobby; not global highscoreboard
