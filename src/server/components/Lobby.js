@@ -71,7 +71,7 @@ class Lobby {
       return false;
     } else {
       let playersReadyUp = players.filter((player) => {
-        console.log(player.isReadyUp);
+        console.log(player.isReadyUp, typeof isReadyUp);
         player.isReadyUp == false;
       });
       console.log(playersReadyUp);
