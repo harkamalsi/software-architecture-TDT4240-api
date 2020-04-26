@@ -46,10 +46,10 @@ class Lobby {
   }
 
   handleInput(socketID, x, y) {
-    /* if (this.players[socketID]) {
+    let player = this.players[socketId];
+    if (player) {
       this.players[socketID].setDirection(x, y);
-    } */
-    this.players[socketID].setDirection(x, y);
+    }
   }
 
   handleReadyUpPlayer(socketId, isReadyUp) {
