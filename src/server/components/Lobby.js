@@ -70,9 +70,9 @@ class Lobby {
     if (players.length == 0) {
       return false;
     } else {
-      let playersReadyUp = players.filter(
-        (player) => player.isReadyUp == false
-      );
+      let playersReadyUp = players.filter((player) => {
+        player.isReadyUp == false;
+      });
       return playersReadyUp.length == 0 ? true : false;
     }
   }

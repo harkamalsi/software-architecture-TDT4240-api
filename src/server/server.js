@@ -109,6 +109,7 @@ const joinLobby = (socketID, inputs) => {
   let { lobbyName, nickname, type } = inputs;
 
   let lobby = game.getLobby(lobbyName);
+  let gameStarted;
 
   let socketInsideAnotherLobbyExists = game.lobbies.find((lobby) => {
     {
@@ -121,6 +122,7 @@ const joinLobby = (socketID, inputs) => {
   }
 
   if (lobby) {
+    gameStarted = lobby.startGame;
     let playerTypeExists = lobby.playerTypeExists(type);
     if (type != 'PACMAN') {
       let ghostNumber = lobby.getGhostsCount();
@@ -135,7 +137,8 @@ const joinLobby = (socketID, inputs) => {
     if (
       lobby.getPlayersCount() < Constants.MAXIMUM_CLIENTS_ALLOWED_PER_LOBBY &&
       socketInsideAnotherLobbyExists == undefined &&
-      !playerTypeExists
+      !playerTypeExists &&
+      !gameStarted
     ) {
       game.addPlayerToLobby(socketID, lobbyName, nickname, type);
     } else {
