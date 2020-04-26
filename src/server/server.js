@@ -126,7 +126,7 @@ const joinLobby = (socketID, inputs) => {
     let playerTypeExists = lobby.playerTypeExists(type);
     if (type != 'PACMAN') {
       let ghostNumber = lobby.getGhostsCount();
-      if (ghostNumber < 4) {
+      if (ghostNumber <= 4) {
         type = 'GHOST_NUMBER_' + ghostNumber;
         playerTypeExists = false;
       } else {
