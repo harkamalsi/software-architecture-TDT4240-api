@@ -22,7 +22,7 @@ class Lobby {
       this.update();
       clearInterval(gameInterval);
       this.init();
-    }, 1000 / 60);
+    }, 1000 / 40);
   }
 
   getPlayersCount() {
