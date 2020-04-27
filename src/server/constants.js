@@ -14,6 +14,7 @@ const constants = {
     GAME_OVER_PACMAN: 'pacman_lost',
     GAME_OVER_GHOSTS: 'ghosts_lost',
     DATABASE_UPDATE: 'database_update',
+    RESPONSE: 'response',
   },
   DATABASE_MSG_TYPES: {
     GET_ALL_PLAYERS: 'get_all_players',
