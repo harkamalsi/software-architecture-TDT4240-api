@@ -193,6 +193,9 @@ const getLobby = (socketID) => {
 
 const handleInput = (socketID, inputs, callback) => {
   game.handleInput(socketID, inputs);
+  if (callback) {
+    callback();
+  }
 };
 
 const onDisconnectLobby = (socketID) => {
