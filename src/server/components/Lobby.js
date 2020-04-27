@@ -11,13 +11,12 @@ class Lobby {
     // players have playerID and type (pacman or ghost). Object of objects.
     this.players = {};
     this.shouldSendUpdate = false;
-    setInterval(this.update.bind(this), 1000 / 60);
 
+    this.interval = setInterval(this.update.bind(this), 1000 / 60);
     this.startGame = false;
   }
 
   getPlayersCount() {
-    //console.log(Object.keys(this.sockets).length);
     return Object.keys(this.sockets).length;
   }
 
@@ -85,7 +84,7 @@ class Lobby {
     // Send a game update to each player every other time
     if (this.shouldSendUpdate && this.startGame) {
       // scoreboard is the "local" scoreboard for a lobby; not global highscoreboard
-      const scoreboard = this.getScoreboard();
+      //const scoreboard = this.getScoreboard();
       Object.keys(this.sockets).forEach((playerID) => {
         const socket = this.sockets[playerID];
         const player = this.players[playerID];
@@ -94,13 +93,14 @@ class Lobby {
           .to(socket)
           .emit(
             Constants.MSG_TYPES.GAME_UPDATE + `_${this.name}`,
-            this.createUpdate(player, scoreboard)
+            this.createUpdate(player)
           );
       });
       this.shouldSendUpdate = false;
     } else {
       this.shouldSendUpdate = true;
     }
+    clearInterval(this.interval);
   }
 
   // TODO: need to correctly implement scores since we have team scores and not individual ones
@@ -110,7 +110,7 @@ class Lobby {
       .map((p) => ({ nickname: p.nickname, score: Math.round(p.score) }));
   }
 
-  createUpdate(player, scoreboard) {
+  createUpdate(player) {
     // Filtering away "this=me" player
     const allOtherPlayers = Object.values(this.players).filter(
       (p) => p !== player
@@ -119,7 +119,6 @@ class Lobby {
     return {
       me: player.serializeForUpdate(),
       others: allOtherPlayers.map((p) => p.serializeForUpdate()),
-      scoreboard,
     };
   }
 }
