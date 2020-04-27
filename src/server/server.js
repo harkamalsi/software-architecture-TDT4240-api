@@ -148,8 +148,14 @@ const joinLobby = (socketID, inputs) => {
 };
 
 const leaveLobby = (socketID, lobbyName) => {
-  console.log('Leave lobby called', socketID, lobbyName);
   game.removePlayerFromLobby(socketID, lobbyName);
+
+  let lobbies = game.lobbies;
+  lobbies.forEach((lobby) => {
+    if (lobby.getPlayersCount() == 0) {
+      game.removeLobby(lobby.name);
+    }
+  });
 };
 
 const createLobby = (socketID, inputs) => {
@@ -216,8 +222,12 @@ const onDisconnectLobby = (socketID) => {
     }
   }
 
-  console.log('lobbies found after a player disconneted:');
-  console.log(game.getLobbies());
+  let lobbies = game.lobbies;
+  lobbies.forEach((lobby) => {
+    if (lobby.getPlayersCount() == 0) {
+      game.removeLobby(lobby.name);
+    }
+  });
 };
 
 const getAllPlayers = (socketID) => {
