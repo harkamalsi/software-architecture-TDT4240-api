@@ -12,8 +12,17 @@ class Lobby {
     this.players = {};
     this.shouldSendUpdate = false;
 
-    this.interval = setInterval(this.update.bind(this), 1000 / 60);
+    //this.interval = setInterval(this.update.bind(this), 1000 / 60);
+    this.init();
     this.startGame = false;
+  }
+
+  init() {
+    var gameInterval = setInterval(() => {
+      this.update();
+      clearInterval(gameInterval);
+      this.init();
+    }, 1000 / 60);
   }
 
   getPlayersCount() {
