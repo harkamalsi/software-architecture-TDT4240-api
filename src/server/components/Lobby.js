@@ -10,7 +10,7 @@ class Lobby {
     this.sockets = {};
     // players have playerID and type (pacman or ghost). Object of objects.
     this.players = {};
-    this.shouldSendUpdate = false;
+    //this.shouldSendUpdate = false;
 
     //this.interval = setInterval(this.update.bind(this), 1000 / 60);
     this.init();
@@ -22,7 +22,7 @@ class Lobby {
       this.update();
       clearInterval(gameInterval);
       this.init();
-    }, 1000 / 60);
+    }, 1000 / 20);
   }
 
   getPlayersCount() {
@@ -91,7 +91,8 @@ class Lobby {
     }
 
     // Send a game update to each player every other time
-    if (this.shouldSendUpdate && this.startGame) {
+    if (this.startGame) {
+      //this.shouldSendUpdate &&
       // scoreboard is the "local" scoreboard for a lobby; not global highscoreboard
       //const scoreboard = this.getScoreboard();
       Object.keys(this.sockets).forEach((playerID) => {
@@ -105,11 +106,11 @@ class Lobby {
             this.createUpdate(player)
           );
       });
-      this.shouldSendUpdate = false;
-    } else {
-      this.shouldSendUpdate = true;
+      //this.shouldSendUpdate = false;
+    } /* else {
+      //this.shouldSendUpdate = true;
     }
-    clearInterval(this.interval);
+    //clearInterval(this.interval); */
   }
 
   // TODO: need to correctly implement scores since we have team scores and not individual ones
